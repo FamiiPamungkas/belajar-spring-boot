@@ -1,6 +1,7 @@
 package com.famipam.security.config;
 
 import com.famipam.security.user.User;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,16 +33,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
+        final String username;
+        boolean isAuthorized = false;
+
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
+        System.out.println("-> start with bearer");
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        System.out.println("-> jwt ="+jwt);
+        username = jwtService.extractUsername(jwt);
+        System.out.println("-> username ="+username);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            System.out.println("-> user ="+userDetails.getUsername());
             if (jwtService.isTokenValid(jwt, userDetails)) {
+                isAuthorized = true;
+                System.out.println("-> token is valid");
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

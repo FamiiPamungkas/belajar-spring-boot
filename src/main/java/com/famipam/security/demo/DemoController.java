@@ -1,5 +1,7 @@
 package com.famipam.security.demo;
 
+import com.famipam.security.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +16,11 @@ public class DemoController {
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hello i'm secured yow.");
+    }
+
+    @GetMapping("exception")
+    public ResponseEntity<?> testException(HttpServletRequest request){
+        System.out.println("-> isAuthorized = "+request.getAttribute("isAuthorized"));
+        throw new ResourceNotFoundException("Testing exception");
     }
 }

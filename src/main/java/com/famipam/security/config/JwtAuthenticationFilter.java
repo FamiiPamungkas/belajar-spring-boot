@@ -1,7 +1,5 @@
 package com.famipam.security.config;
 
-import com.famipam.security.user.User;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,34 +32,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
-        boolean isAuthorized = false;
 
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
-        System.out.println("-> start with bearer");
-        jwt = authHeader.substring(7);
-        System.out.println("-> jwt ="+jwt);
-        username = jwtService.extractUsername(jwt);
-        System.out.println("-> username ="+username);
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            System.out.println("-> user ="+userDetails.getUsername());
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                isAuthorized = true;
-                System.out.println("-> token is valid");
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        try {
+            jwt = authHeader.substring(7);
+            username = jwtService.extractUsername(jwt);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            onError(response, e);
         }
-        filterChain.doFilter(request, response);
+    }
+
+    private void onError(HttpServletResponse response, Exception e) throws IOException {
+        // Return a 401 Unauthorized response
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{ \"message\": \"" + e.getMessage() + "\" }");
     }
 }

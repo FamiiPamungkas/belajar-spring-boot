@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
 
     @GetMapping
-    public ResponseEntity<String> sayHello(){
+    public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello i'm secured yow.");
     }
 
     @GetMapping("exception")
-    public ResponseEntity<?> testException(HttpServletRequest request){
-        System.out.println("-> isAuthorized = "+request.getAttribute("isAuthorized"));
+    public ResponseEntity<?> testException() {
         throw new ResourceNotFoundException("Testing exception");
     }
 }

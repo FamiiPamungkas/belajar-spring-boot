@@ -63,8 +63,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void onError(HttpServletResponse response, Exception e) throws IOException {
         // Return a 401 Unauthorized response
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        int httpStatus = HttpServletResponse.SC_UNAUTHORIZED;
+        response.setStatus(httpStatus);
         response.setContentType("application/json");
-        response.getWriter().write("{ \"message\": \"" + e.getMessage() + "\" }");
+        response.getWriter().write("{ \"status\": \"" + httpStatus + "\", \"message\": \"" + e.getMessage() + "\" }");
     }
 }

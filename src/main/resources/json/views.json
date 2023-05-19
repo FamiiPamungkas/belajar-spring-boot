@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "name": "Home",
+    "description": "Home Dashboard",
+    "link": "/home"
+  },
+  {
+    "id": "2",
+    "name": "Login",
+    "description": "Login Page",
+    "link": "/login"
+  },
+  {
+    "id": "3",
+    "name": "Logout",
+    "description": "Logout",
+    "link": "/logout"
+  }
+]

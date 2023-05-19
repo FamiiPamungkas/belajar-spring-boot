@@ -1,6 +1,7 @@
 package com.famipam.security.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Data
@@ -8,12 +9,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class View extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence")
-    private Long id;
 
     private String name;
     private String description;

@@ -1,6 +1,9 @@
 package com.famipam.security.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.TableGenerator;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,12 +25,8 @@ import java.util.stream.Collectors;
         valueColumnName = "next_val",
         allocationSize = 1
 )
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class User extends BaseEntity implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence")
-    private Long id;
 
     @Column(nullable = false)
     private String firstname;

@@ -1,6 +1,8 @@
 package com.famipam.security.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import lombok.*;
 
 import java.util.Set;
@@ -10,12 +12,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Role extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence")
-    private Long id;
 
     @Column(nullable = false)
     private String name;

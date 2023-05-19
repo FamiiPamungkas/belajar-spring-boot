@@ -25,7 +25,6 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<?> handleJwtSignatureException(Throwable e) {
-        System.out.println("-> handle JWT Signature Exception");
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(ErrorBody.builder()
                 .status(status.value())

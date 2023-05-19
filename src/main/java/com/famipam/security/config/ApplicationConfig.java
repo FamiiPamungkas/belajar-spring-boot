@@ -1,6 +1,6 @@
 package com.famipam.security.config;
 
-import com.famipam.security.user.UserRepository;
+import com.famipam.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

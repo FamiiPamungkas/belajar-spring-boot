@@ -1,42 +1,55 @@
-package com.famipam.security.user;
+package com.famipam.security.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User implements UserDetails {
+@TableGenerator(
+        name = "sequence",
+        table = "sequence",
+        pkColumnName = "sequence_name",
+        valueColumnName = "next_val",
+        allocationSize = 1
+)
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseEntity implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence")
+    private Long id;
+
+    @Column(nullable = false)
     private String firstname;
     private String lastname;
 
+    @Column(nullable = false)
     private String email;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany
+    private Set<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return getRoles().stream().map(
+                x -> new SimpleGrantedAuthority(String.valueOf(x.getId()))
+        ).collect(Collectors.toSet());
     }
 
     @Override

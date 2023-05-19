@@ -1,9 +1,8 @@
 package com.famipam.security.auth;
 
 import com.famipam.security.config.JwtService;
-import com.famipam.security.user.Role;
-import com.famipam.security.user.User;
-import com.famipam.security.user.UserRepository;
+import com.famipam.security.entity.User;
+import com.famipam.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +25,6 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
                 .build();
         if (repository.findByUsername(user.getUsername()).isEmpty()) {
             repository.save(user);

@@ -2,11 +2,33 @@
   {
     "id": "1",
     "name": "Admin",
-    "description": "Role Admin"
+    "description": "Role Admin",
+    "views": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      },
+      {
+        "id": "3"
+      }
+    ]
   },
   {
     "id": "2",
     "name": "User",
-    "description": "Role User"
+    "description": "Role User",
+    "views": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      },
+      {
+        "id": "3"
+      }
+    ]
   }
 ]

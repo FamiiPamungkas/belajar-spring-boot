@@ -3,8 +3,8 @@ package com.famipam.security.mapper;
 import com.famipam.security.dto.UserDTO;
 import com.famipam.security.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ public class UserMapper implements Function<User, UserDTO> {
         return new UserDTO(
                 user.getId(),
                 user.getFirstname(),
-                user.getLastname(),
+                Optional.ofNullable(user.getLastname()).orElse(""),
                 user.getUsername(),
                 user.getRoles()
                         .stream()

@@ -13,6 +13,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class View extends BaseEntity {
 
+    @Column(unique = true, nullable = false)
+    private String authority;
     @Column(nullable = false)
     private String name;
     private String description;

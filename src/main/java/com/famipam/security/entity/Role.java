@@ -2,6 +2,7 @@ package com.famipam.security.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class Role extends BaseEntity {
     private String name;
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     Set<View> views;
 
 }

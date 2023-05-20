@@ -20,6 +20,7 @@ public class ViewMapper implements Function<View, ViewDTO> {
         return new ViewDTO(
                 view.getId(),
                 parentId,
+                view.getAuthority(),
                 view.getName(),
                 view.getDescription(),
                 view.getDescription(),

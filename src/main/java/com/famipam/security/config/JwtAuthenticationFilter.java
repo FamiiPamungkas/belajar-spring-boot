@@ -76,7 +76,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void onError(HttpStatus httpStatus, HttpServletResponse response, Exception e) throws IOException {
-
         response.setStatus(httpStatus.value());
         response.setContentType("application/json");
         response.getWriter().write("{ \"status\": \"" + httpStatus.value() + "\", \"message\": \"" + e.getMessage() + "\" }");

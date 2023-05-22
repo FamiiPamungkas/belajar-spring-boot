@@ -22,7 +22,7 @@ public class BaseEntity implements Serializable {
     private Date updatedAt;
 
     @PrePersist
-    private void prePersist() {
+    protected void prePersist() {
         updatedAt = new Date();
 
         if (active == null) {

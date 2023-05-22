@@ -7,8 +7,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -43,12 +43,14 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles()
-                .stream()
-                .flatMap(role -> role.getViews().stream())
-                .map(view ->
-                        new SimpleGrantedAuthority(view.getAuthority())
-                ).collect(Collectors.toSet());
+        Set<SimpleGrantedAuthority> authorities = new LinkedHashSet<>();
+        for (Role role : getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getAuthority()));
+            for (View view : role.getViews()) {
+                authorities.add(new SimpleGrantedAuthority(view.getAuthority()));
+            }
+        }
+        return authorities;
     }
 
     @Override

@@ -1,6 +1,7 @@
 [
   {
     "firstname": "Admin",
+    "birthdate": "1990-04-25",
     "username": "admin",
     "password": "13131313",
     "email": "fame1302@gmail.com",

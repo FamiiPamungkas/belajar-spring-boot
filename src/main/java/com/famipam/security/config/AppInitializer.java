@@ -6,6 +6,7 @@ import com.famipam.security.entity.View;
 import com.famipam.security.repository.RoleRepository;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.repository.ViewRepository;
+import com.famipam.security.util.DateUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -67,7 +68,7 @@ public class AppInitializer implements ApplicationRunner {
         List<User> users = objectMapper.readValue(inputStream, new TypeReference<>() {
         });
         for (User user : users) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(DateUtils.formatDefaultPassword(user.getBirthdate())));
             userRepository.save(user);
         }
     }

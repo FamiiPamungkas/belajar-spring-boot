@@ -2,6 +2,7 @@ package com.famipam.security.mapper;
 
 import com.famipam.security.dto.UserDTO;
 import com.famipam.security.entity.User;
+import com.famipam.security.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -25,7 +26,9 @@ public class UserMapper implements Function<User, UserDTO> {
                 user.getId(),
                 user.getFirstname(),
                 Optional.ofNullable(user.getLastname()).orElse(""),
+                DateUtils.formatDate(user.getBirthdate()),
                 user.getUsername(),
+                user.getEmail(),
                 user.getRoles()
                         .stream()
                         .map(roleMapper)

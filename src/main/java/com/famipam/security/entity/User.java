@@ -6,7 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -28,6 +30,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String firstname;
     private String lastname;
+
+    @Column(nullable = false, columnDefinition = "DATE")
+    private Date birthdate;
 
     @Column(nullable = false)
     private String email;

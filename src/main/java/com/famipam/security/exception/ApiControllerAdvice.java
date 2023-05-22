@@ -12,6 +12,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
+    @ExceptionHandler(ExpectedException.class)
+    public ResponseEntity<?> handleExpectedException(Throwable e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(ErrorBody.builder()
+                .status(status.value())
+                .message(e.getMessage())
+                .build(), status
+        );
+    }
+
+    @ResponseBody
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(Throwable e) {
         HttpStatus status = HttpStatus.NOT_FOUND;

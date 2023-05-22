@@ -4,27 +4,31 @@
     "authority": "home",
     "name": "Home",
     "description": "Home Dashboard",
-    "link": "/api/v1/home"
+    "link": "/api/v1/home",
+    "menu": "true"
   },
   {
     "id": "2",
     "authority": "login",
     "name": "Login",
     "description": "Login Page",
-    "link": "/api/v1/login"
+    "link": "/api/v1/login",
+    "menu": "false"
   },
   {
     "id": "3",
     "authority": "logout",
     "name": "Logout",
     "description": "Logout",
-    "link": "/api/v1/logout"
+    "link": "/api/v1/logout",
+    "menu": "false"
   },
   {
     "id": "4",
     "authority": "users",
     "name": "Users",
     "description": "Users",
-    "link": "/api/v1/users"
+    "link": "/api/v1/users",
+    "menu": "false"
   }
 ]

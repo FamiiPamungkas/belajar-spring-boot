@@ -1,12 +1,16 @@
 package com.famipam.security.config;
 
 import com.famipam.security.entity.User;
+import com.famipam.security.exception.UserDisabledException;
 import com.famipam.security.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        System.out.println("### Filter");
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
@@ -43,7 +48,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = jwtService.extractUsername(jwt);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 User userDetails = this.userService.findByUsername(username);
+                System.out.println("-> user Enabled ? " + userDetails.isEnabled());
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    if (!userDetails.isEnabled()) throw new UserDisabledException("User is Disabled");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -56,6 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
+        }catch (SignatureException | ExpiredJwtException | UserDisabledException e) {
+            onError(HttpStatus.UNAUTHORIZED, response, e);
         } catch (Exception e) {
             e.printStackTrace();
             onError(response, e);
@@ -63,10 +72,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void onError(HttpServletResponse response, Exception e) throws IOException {
-        // Return a 401 Unauthorized response
-        int httpStatus = HttpServletResponse.SC_UNAUTHORIZED;
-        response.setStatus(httpStatus);
+        onError(HttpStatus.INTERNAL_SERVER_ERROR, response, e);
+    }
+
+    private void onError(HttpStatus httpStatus, HttpServletResponse response, Exception e) throws IOException {
+
+        response.setStatus(httpStatus.value());
         response.setContentType("application/json");
-        response.getWriter().write("{ \"status\": \"" + httpStatus + "\", \"message\": \"" + e.getMessage() + "\" }");
+        response.getWriter().write("{ \"status\": \"" + httpStatus.value() + "\", \"message\": \"" + e.getMessage() + "\" }");
     }
 }

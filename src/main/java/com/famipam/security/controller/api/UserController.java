@@ -54,13 +54,15 @@ public class UserController {
         return ResponseEntity.ok("Delete User Success");
     }
 
-    @PostMapping("")
+    @PutMapping()
     public ResponseEntity<UserDTO> editUser(
             @RequestBody UserDTO userDTO
     ) throws ParseException {
-        User user = new User();
+        User user = userRepository.findById(userDTO.id())
+                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
 
-        if (userRepository.existsByUsername(userDTO.username())) throw new ExpectedException("Username Has Been Used");
+        if (userRepository.existsByUsernameExcludingUserId(userDTO.username(), user.getId()))
+            throw new ExpectedException("Username Has Been Used");
 
         Date birthdate = DateUtils.parseISODate(userDTO.birthdate());
 
@@ -69,7 +71,6 @@ public class UserController {
         user.setBirthdate(birthdate);
         user.setEmail(userDTO.email());
         user.setUsername(userDTO.username());
-        user.setPassword(passwordEncoder.encode(DateUtils.formatDefaultPassword(birthdate)));
 
         userRepository.save(user);
 

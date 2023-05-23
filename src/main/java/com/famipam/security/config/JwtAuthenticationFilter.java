@@ -1,5 +1,6 @@
 package com.famipam.security.config;
 
+import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.UserDisabledException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -50,23 +51,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                 System.out.println("-> user Enabled ? " + userDetails.isEnabled());
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    if (jwtService.isNeedToReAuthentication(jwt)) throw new ExpectedException("Your session is expired");
                     if (!userDetails.isEnabled()) throw new UserDisabledException("User is Disabled");
-                    jwt = jwtService.refreshToken(jwt);
 
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
+                    jwt = jwtService.refreshToken(jwt);
+                    response.setHeader("Authorization", jwt);
+
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
                     authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    response.setHeader("Authorization", jwt);
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (SignatureException | ExpiredJwtException | UserDisabledException e) {
+        } catch (SignatureException | ExpiredJwtException | UserDisabledException | ExpectedException e) {
             onError(HttpStatus.UNAUTHORIZED, response, e);
         } catch (Exception e) {
             e.printStackTrace();

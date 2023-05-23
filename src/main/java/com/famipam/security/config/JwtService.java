@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,19 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    @Value("${app.version}")
+    private String APP_VERSION;
+
     private static final String SECRET_KEY = "3778214125432A462D4A614E645267556B58703273357638792F423F4528472B";
     private static final int EXPIRATION_TIME = 1000 * 60 * 60;
 
     public String extractUsername(String token) throws SignatureException, ExpiredJwtException {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractAppVersion(String token) throws SignatureException, ExpiredJwtException {
+        Claims claims = extractAllClaims(token);
+        return claims.get("ver", String.class);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws SignatureException, ExpiredJwtException {
@@ -39,6 +48,7 @@ public class JwtService {
             Map<String, Object> extractClaims,
             UserDetails userDetails
     ) {
+        extractClaims.put("ver", APP_VERSION);
         return Jwts
                 .builder()
                 .setClaims(extractClaims)
@@ -58,7 +68,7 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) throws SignatureException, ExpiredJwtException{
+    private Date extractExpiration(String token) throws SignatureException, ExpiredJwtException {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -89,5 +99,16 @@ public class JwtService {
                 .setClaims(claims)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public boolean isNeedToReAuthentication(String token) {
+        try {
+            String appVersion = extractAppVersion(token);
+            String[] version = appVersion.split("\\.");
+            String[] currentVersion = APP_VERSION.split("\\.");
+            return !version[1].equals(currentVersion[1]);
+        } catch (Exception e) {
+            return true;
+        }
     }
 }

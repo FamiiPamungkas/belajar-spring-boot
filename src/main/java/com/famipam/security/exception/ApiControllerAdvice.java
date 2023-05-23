@@ -44,4 +44,15 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Throwable e) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity<>(ErrorBody.builder()
+                .status(status.value())
+                .message(e.getMessage())
+                .build(), status
+        );
+    }
+
 }

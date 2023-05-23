@@ -4,6 +4,7 @@ import com.famipam.security.dto.UserDTO;
 import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.ResourceNotFoundException;
+import com.famipam.security.exception.UserDisabledException;
 import com.famipam.security.mapper.UserMapper;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.util.DateUtils;
@@ -41,7 +42,8 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(
             @PathVariable long id
     ) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
         return ResponseEntity.ok(userMapper.apply(user));
     }
 
@@ -49,7 +51,8 @@ public class UserController {
     public ResponseEntity<String> deleteUser(
             @PathVariable long id
     ) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
         userRepository.delete(user);
         return ResponseEntity.ok("Delete User Success");
     }

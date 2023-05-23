@@ -20,6 +20,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "3778214125432A462D4A614E645267556B58703273357638792F423F4528472B";
+    private static final int EXPIRATION_TIME = 1000 * 60 * 60;
 
     public String extractUsername(String token) throws SignatureException, ExpiredJwtException {
         return extractClaim(token, Claims::getSubject);
@@ -43,7 +44,7 @@ public class JwtService {
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24)))
+                .setExpiration(new Date(System.currentTimeMillis() + (EXPIRATION_TIME)))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -73,5 +74,20 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String refreshToken(String token) {
+        Claims claims = extractAllClaims(token);
+
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + EXPIRATION_TIME);
+
+        claims.setIssuedAt(now);
+        claims.setExpiration(expirationDate);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

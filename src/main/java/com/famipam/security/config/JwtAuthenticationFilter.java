@@ -1,8 +1,6 @@
 package com.famipam.security.config;
 
-import com.famipam.security.entity.User;
 import com.famipam.security.exception.UserDisabledException;
-import com.famipam.security.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
@@ -27,7 +25,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserService userService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -38,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         System.out.println("### Filter");
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
         final String username;
+        String jwt;
 
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
@@ -54,6 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println("-> user Enabled ? " + userDetails.isEnabled());
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     if (!userDetails.isEnabled()) throw new UserDisabledException("User is Disabled");
+                    jwt = jwtService.refreshToken(jwt);
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -63,10 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    response.setHeader("Authorization", jwt);
                 }
             }
             filterChain.doFilter(request, response);
-        }catch (SignatureException | ExpiredJwtException | UserDisabledException e) {
+        } catch (SignatureException | ExpiredJwtException | UserDisabledException e) {
             onError(HttpStatus.UNAUTHORIZED, response, e);
         } catch (Exception e) {
             e.printStackTrace();

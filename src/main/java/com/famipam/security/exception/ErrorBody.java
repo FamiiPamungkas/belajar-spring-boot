@@ -1,17 +1,17 @@
 package com.famipam.security.exception;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorBody {
 
-    private int status;
-    private String message;
+    protected int status;
+    protected String message;
 
 }

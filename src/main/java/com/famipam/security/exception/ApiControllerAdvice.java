@@ -1,14 +1,19 @@
 package com.famipam.security.exception;
 
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
@@ -51,6 +56,23 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ErrorBody.builder()
                 .status(status.value())
                 .message(e.getMessage())
+                .build(), status
+        );
+    }
+
+    @Override
+    @ResponseBody
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e,
+            @NotNull HttpHeaders headers,
+            @NotNull HttpStatusCode status,
+            @NotNull WebRequest request
+    ) {
+
+        return new ResponseEntity<>(ValidationErrorBody.builder()
+                .status(status.value())
+                .message(e.getBody().getDetail())
+                .errors(e.getDetailMessageArguments())
                 .build(), status
         );
     }

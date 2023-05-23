@@ -4,14 +4,14 @@ import com.famipam.security.dto.UserDTO;
 import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.ResourceNotFoundException;
-import com.famipam.security.exception.UserDisabledException;
 import com.famipam.security.mapper.UserMapper;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.util.DateUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper = new UserMapper();
 
     @GetMapping
@@ -59,10 +59,10 @@ public class UserController {
 
     @PutMapping()
     public ResponseEntity<UserDTO> editUser(
-            @RequestBody UserDTO userDTO
+            @Valid @RequestBody UserDTO userDTO
     ) throws ParseException {
         User user = userRepository.findById(userDTO.id())
-                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (userRepository.existsByUsernameExcludingUserId(userDTO.username(), user.getId()))
             throw new ExpectedException("Username Has Been Used");

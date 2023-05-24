@@ -1,5 +1,6 @@
 package com.famipam.security.exception;
 
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +18,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
-    @ExceptionHandler(ExpectedException.class)
+    @ExceptionHandler({
+            JwtException.class,
+            ExpectedException.class
+    })
     public ResponseEntity<?> handleExpectedException(Throwable e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(ErrorBody.builder()
@@ -52,6 +56,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Throwable e) {
+        e.printStackTrace();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(ErrorBody.builder()
                 .status(status.value())

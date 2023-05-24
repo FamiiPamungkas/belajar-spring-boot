@@ -2,8 +2,7 @@ package com.famipam.security.config;
 
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.UserDisabledException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,9 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (jwtService.isNeedToReAuthentication(jwt)) throw new ExpectedException("Your session is expired");
                     if (!userDetails.isEnabled()) throw new UserDisabledException("User is Disabled");
 
-                    jwt = jwtService.refreshToken(jwt);
-                    response.setHeader("Authorization", jwt);
-
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
@@ -67,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (SignatureException | ExpiredJwtException | UserDisabledException | ExpectedException e) {
+        } catch (JwtException | UserDisabledException | ExpectedException e) {
             onError(HttpStatus.UNAUTHORIZED, response, e);
         } catch (Exception e) {
             e.printStackTrace();

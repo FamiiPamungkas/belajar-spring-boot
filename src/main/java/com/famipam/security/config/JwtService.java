@@ -1,12 +1,11 @@
 package com.famipam.security.config;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -24,55 +23,81 @@ public class JwtService {
     private String APP_VERSION;
 
     private static final String SECRET_KEY = "3778214125432A462D4A614E645267556B58703273357638792F423F4528472B";
-    private static final int EXPIRATION_TIME = 1000 * 60 * 60;
+    private static final int TOKEN_EXPIRATION_TIME = 1000 * 60 * 30;
+    private static final int REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    public String extractUsername(String token) throws SignatureException, ExpiredJwtException {
+    public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String extractAppVersion(String token) throws SignatureException, ExpiredJwtException {
+    public String extractAppVersion(String token) throws JwtException {
         Claims claims = extractAllClaims(token);
         return claims.get("ver", String.class);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws SignatureException, ExpiredJwtException {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws JwtException {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateAccessToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("ver", APP_VERSION);
+        claims.put("type", TokenType.ACCESS_TOKEN);
+
+        return generateToken(claims, userDetails, TOKEN_EXPIRATION_TIME);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", TokenType.REFRESH_TOKEN);
+
+        return generateToken(claims, userDetails, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
     public String generateToken(
             Map<String, Object> extractClaims,
-            UserDetails userDetails
+            UserDetails userDetails,
+            int expirationTime
     ) {
-        extractClaims.put("ver", APP_VERSION);
         return Jwts
                 .builder()
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (EXPIRATION_TIME)))
+                .setExpiration(new Date(System.currentTimeMillis() + (expirationTime)))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && isAccessToken(token));
     }
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) throws SignatureException, ExpiredJwtException {
+    public boolean isAccessToken(String token) {
+        String type = (String) extractClaim(token, x -> x.get("type"));
+        if (type == null) return false;
+
+        return type.equals(TokenType.ACCESS_TOKEN.name());
+    }
+
+    public boolean isRefreshToken(String token) {
+        String type = (String) extractClaim(token, x -> x.get("type"));
+        if (type == null) return false;
+
+        return type.equals(TokenType.REFRESH_TOKEN.name());
+    }
+
+    private Date extractExpiration(String token) throws JwtException {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token) throws SignatureException, ExpiredJwtException {
+    private Claims extractAllClaims(String token) throws JwtException {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -86,21 +111,6 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String refreshToken(String token) {
-        Claims claims = extractAllClaims(token);
-
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + EXPIRATION_TIME);
-
-        claims.setIssuedAt(now);
-        claims.setExpiration(expirationDate);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public boolean isNeedToReAuthentication(String token) {
         try {
             String appVersion = extractAppVersion(token);
@@ -111,4 +121,9 @@ public class JwtService {
             return true;
         }
     }
+}
+
+enum TokenType {
+    ACCESS_TOKEN,
+    REFRESH_TOKEN
 }

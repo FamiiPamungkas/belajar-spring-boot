@@ -23,7 +23,7 @@ public class ViewMapper implements Function<View, ViewDTO> {
                 view.getAuthority(),
                 view.getName(),
                 view.getDescription(),
-                view.getDescription(),
+                view.getLink(),
                 view.isMenu()
         );
     }

@@ -22,7 +22,7 @@ public class Menu extends BaseEntity {
     private String link;
     @Column(name = "group_name")
     private String group;
-
+    private int seq;
     private boolean showOnNav;
 
     @ManyToOne

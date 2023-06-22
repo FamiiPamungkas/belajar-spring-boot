@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('users')")
+//@PreAuthorize("hasAuthority('user-management')")
 public class UserController {
 
     private final UserRepository userRepository;

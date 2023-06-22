@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -86,4 +87,18 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return getActive();
     }
+
+    private Set<Menu> getMenus(){
+        return getRoles().stream()
+                .flatMap(role->role.getMenus().stream())
+                .collect(Collectors.toSet());
+    }
+
+//    private Set<Menu> getTreeMenus(){
+//        Set<Menu> menus = new LinkedHashSet<>();
+//        for (Role role : getRoles()) {
+//            menus.addAll(role.getMenus());
+//        }
+//
+//    }
 }

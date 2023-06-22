@@ -6,7 +6,8 @@
     "link": "/dashboard",
     "group": "",
     "authority": "dashboard",
-    "showOnNav": "true"
+    "showOnNav": "true",
+    "seq": 1
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "link": "/user-management",
     "group": "User Management",
     "authority": "user-management",
-    "showOnNav": "true"
+    "showOnNav": "true",
+    "seq": 1000
   },
   {
     "id": 3,
@@ -25,6 +27,7 @@
     "group": "User Management",
     "authority": "list-user",
     "showOnNav": "true",
+    "seq": 1001,
     "parent": {
       "id": 2
     }
@@ -37,6 +40,7 @@
     "group": "User Management",
     "authority": "user-role",
     "showOnNav": "true",
+    "seq": 1002,
     "parent": {
       "id": 2
     }
@@ -49,6 +53,7 @@
     "group": "User Management",
     "authority": "user-menu",
     "showOnNav": "true",
+    "seq": 1003,
     "parent": {
       "id": 2
     }

@@ -3,7 +3,7 @@
     "id": "1",
     "name": "Admin",
     "description": "Role Admin",
-    "views": [
+    "menus": [
       {
         "id": "1"
       },
@@ -22,7 +22,7 @@
     "id": "2",
     "name": "User",
     "description": "Role User",
-    "views": [
+    "menus": [
       {
         "id": "1"
       },

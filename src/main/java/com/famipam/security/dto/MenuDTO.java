@@ -1,6 +1,6 @@
 package com.famipam.security.dto;
 
-public record ViewDTO(
+public record MenuDTO(
         long id,
         long parentId,
         String authority,

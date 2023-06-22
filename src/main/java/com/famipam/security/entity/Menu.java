@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class View extends BaseEntity {
+public class Menu extends BaseEntity {
 
     @Column(unique = true, nullable = false)
     private String authority;
@@ -23,6 +23,6 @@ public class View extends BaseEntity {
     private boolean isMenu;
 
     @ManyToOne
-    private View parent;
+    private Menu parent;
 
 }

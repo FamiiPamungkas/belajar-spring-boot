@@ -2,10 +2,10 @@ package com.famipam.security.config;
 
 import com.famipam.security.entity.Role;
 import com.famipam.security.entity.User;
-import com.famipam.security.entity.View;
+import com.famipam.security.entity.Menu;
 import com.famipam.security.repository.RoleRepository;
 import com.famipam.security.repository.UserRepository;
-import com.famipam.security.repository.ViewRepository;
+import com.famipam.security.repository.MenuRepository;
 import com.famipam.security.util.DateUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,7 @@ import java.util.List;
 public class AppInitializer implements ApplicationRunner {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final ViewRepository viewRepository;
+    private final MenuRepository menuRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,14 +40,14 @@ public class AppInitializer implements ApplicationRunner {
 
     private void buildViewData() throws IOException {
         System.out.println("## Build View Data");
-        if (viewRepository.count()>0) return;
+        if (menuRepository.count() > 0) return;
 
         InputStream inputStream = getClass().getResourceAsStream("/json/views.json");
-        List<View> views = objectMapper.readValue(inputStream, new TypeReference<>() {
+        List<Menu> menus = objectMapper.readValue(inputStream, new TypeReference<>() {
         });
 
-        System.out.println(Arrays.toString(views.toArray()));
-        viewRepository.saveAll(views);
+        System.out.println(Arrays.toString(menus.toArray()));
+        menuRepository.saveAll(menus);
     }
 
     private void buildRoleData() throws IOException {

@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -51,8 +50,8 @@ public class User extends BaseEntity implements UserDetails {
         Set<SimpleGrantedAuthority> authorities = new LinkedHashSet<>();
         for (Role role : getRoles()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getAuthority()));
-            for (View view : role.getViews()) {
-                authorities.add(new SimpleGrantedAuthority(view.getAuthority()));
+            for (Menu menu : role.getMenus()) {
+                authorities.add(new SimpleGrantedAuthority(menu.getAuthority()));
             }
         }
         return authorities;

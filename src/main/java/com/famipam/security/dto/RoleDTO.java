@@ -6,6 +6,6 @@ public record RoleDTO(
         long id,
         String name,
         String description,
-        List<ViewDTO> views
+        List<MenuDTO> views
 ) {
 }

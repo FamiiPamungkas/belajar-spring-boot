@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class RoleMapper implements Function<Role, RoleDTO> {
 
-    private final ViewMapper viewMapper = new ViewMapper();
+    private final MenuMapper menuMapper = new MenuMapper();
 
     /**
      * Applies this function to the given argument.
@@ -22,9 +22,9 @@ public class RoleMapper implements Function<Role, RoleDTO> {
                 role.getId(),
                 role.getName(),
                 role.getDescription(),
-                role.getViews()
+                role.getMenus()
                         .stream()
-                        .map(viewMapper)
+                        .map(menuMapper)
                         .collect(Collectors.toList())
         );
     }

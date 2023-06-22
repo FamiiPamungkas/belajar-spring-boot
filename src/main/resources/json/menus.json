@@ -1,0 +1,49 @@
+[
+  {
+    "id": 1,
+    "name": "Dashboard",
+    "description": "Dashboard Menu",
+    "link": "/dashboard",
+    "group": "",
+    "parent": 0
+  },
+  {
+    "id": 2,
+    "name": "User Management",
+    "description": "User Management Menu",
+    "link": "/user-management",
+    "group": "User Management",
+    "parent": 0
+  },
+  {
+    "id": 3,
+    "name": "Users",
+    "description": "List User Menu",
+    "link": "/users",
+    "group": "User Management",
+    "parent": 2
+  },
+  {
+    "id": 4,
+    "name": "Role",
+    "description": "User Role Menu",
+    "link": "/roles",
+    "group": "User Management",
+    "parent": 2
+  },
+  {
+    "id": 5,
+    "name": "Menu",
+    "description": "Menu",
+    "link": "/menus",
+    "group": "User Management",
+    "parent": 2
+  },
+  {
+    "id": 6,
+    "name": "Menu",
+    "description": "Menu",
+    "link": "/menus",
+    "group": "User Management"
+  }
+]

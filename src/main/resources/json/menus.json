@@ -5,7 +5,8 @@
     "description": "Dashboard Menu",
     "link": "/dashboard",
     "group": "",
-    "parent": 0
+    "authority": "dashboard",
+    "showOnNav": "true"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "description": "User Management Menu",
     "link": "/user-management",
     "group": "User Management",
-    "parent": 0
+    "authority": "user-management",
+    "showOnNav": "true"
   },
   {
     "id": 3,
@@ -21,7 +23,11 @@
     "description": "List User Menu",
     "link": "/users",
     "group": "User Management",
-    "parent": 2
+    "authority": "list-user",
+    "showOnNav": "true",
+    "parent": {
+      "id": 2
+    }
   },
   {
     "id": 4,
@@ -29,7 +35,11 @@
     "description": "User Role Menu",
     "link": "/roles",
     "group": "User Management",
-    "parent": 2
+    "authority": "user-role",
+    "showOnNav": "true",
+    "parent": {
+      "id": 2
+    }
   },
   {
     "id": 5,
@@ -37,13 +47,10 @@
     "description": "Menu",
     "link": "/menus",
     "group": "User Management",
-    "parent": 2
-  },
-  {
-    "id": 6,
-    "name": "Menu",
-    "description": "Menu",
-    "link": "/menus",
-    "group": "User Management"
+    "authority": "user-menu",
+    "showOnNav": "true",
+    "parent": {
+      "id": 2
+    }
   }
 ]

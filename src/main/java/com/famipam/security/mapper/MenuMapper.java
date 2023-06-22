@@ -24,7 +24,8 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getName(),
                 menu.getDescription(),
                 menu.getLink(),
-                menu.isMenu()
+                menu.getGroup(),
+                menu.isShowOnNav()
         );
     }
 }

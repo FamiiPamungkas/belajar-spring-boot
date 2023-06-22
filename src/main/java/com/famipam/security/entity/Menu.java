@@ -20,7 +20,10 @@ public class Menu extends BaseEntity {
     private String description;
     @Column(nullable = false)
     private String link;
-    private boolean isMenu;
+    @Column(name = "group_name")
+    private String group;
+
+    private boolean showOnNav;
 
     @ManyToOne
     private Menu parent;

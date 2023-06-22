@@ -7,6 +7,7 @@ public record MenuDTO(
         String name,
         String description,
         String link,
+        String group,
         boolean isMenu
 ) {
 }

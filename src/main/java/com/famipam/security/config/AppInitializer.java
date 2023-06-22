@@ -42,7 +42,7 @@ public class AppInitializer implements ApplicationRunner {
         System.out.println("## Build View Data");
         if (menuRepository.count() > 0) return;
 
-        InputStream inputStream = getClass().getResourceAsStream("/json/views.json");
+        InputStream inputStream = getClass().getResourceAsStream("/json/menus.json");
         List<Menu> menus = objectMapper.readValue(inputStream, new TypeReference<>() {
         });
 

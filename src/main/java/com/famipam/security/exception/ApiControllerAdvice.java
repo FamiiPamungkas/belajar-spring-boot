@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,7 +44,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(SignatureException.class)
+    @ExceptionHandler({SignatureException.class, AccessDeniedException.class})
     public ResponseEntity<?> handleJwtSignatureException(Throwable e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(ErrorBody.builder()

@@ -16,10 +16,8 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
      */
     @Override
     public MenuDTO apply(Menu menu) {
-        long parentId = menu.getParent() != null ? menu.getParent().getId() : 0;
         return new MenuDTO(
                 menu.getId(),
-                parentId,
                 menu.getAuthority(),
                 menu.getName(),
                 menu.getDescription(),
@@ -29,7 +27,8 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getChildren()
                         .stream()
                         .map(this)
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                menu.getSeq()
         );
     }
 }

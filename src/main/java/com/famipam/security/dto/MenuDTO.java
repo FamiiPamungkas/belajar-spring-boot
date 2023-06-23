@@ -4,13 +4,13 @@ import java.util.Set;
 
 public record MenuDTO(
         long id,
-        long parentId,
         String authority,
         String name,
         String description,
         String link,
         String group,
-        boolean isMenu,
-        Set<MenuDTO> children
+        boolean showOnNav,
+        Set<MenuDTO> children,
+        int seq
 ) {
 }

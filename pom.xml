@@ -155,6 +155,9 @@
 						<classPattern>com.famipam.security.entity.**</classPattern>
 					</classPatterns>
 					<outputKind>module</outputKind>
+					<outputFile>
+						${project.basedir}\model\model.d.ts
+					</outputFile>
 				</configuration>
 			</plugin>
 		</plugins>

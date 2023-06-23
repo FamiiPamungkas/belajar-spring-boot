@@ -3,7 +3,11 @@ package com.famipam.security.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -27,5 +31,12 @@ public class Menu extends BaseEntity {
 
     @ManyToOne
     private Menu parent;
+
+    @Transient
+    private Set<Menu> children;
+
+    public Set<Menu> getChildren() {
+        return children != null ? children : new LinkedHashSet<>();
+    }
 
 }

@@ -50,7 +50,7 @@ public class User extends BaseEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = new LinkedHashSet<>();
         for (Role role : getRoles()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getAuthority()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority()));
             for (Menu menu : role.getMenus()) {
                 authorities.add(new SimpleGrantedAuthority(menu.getAuthority()));
             }
@@ -88,17 +88,29 @@ public class User extends BaseEntity implements UserDetails {
         return getActive();
     }
 
-    private Set<Menu> getMenus(){
+    private Set<Menu> getMenus() {
         return getRoles().stream()
-                .flatMap(role->role.getMenus().stream())
+                .flatMap(role -> role.getMenus().stream())
                 .collect(Collectors.toSet());
     }
 
-//    private Set<Menu> getTreeMenus(){
-//        Set<Menu> menus = new LinkedHashSet<>();
-//        for (Role role : getRoles()) {
-//            menus.addAll(role.getMenus());
-//        }
-//
-//    }
+    public Set<Menu> getTreeMenus() {
+        Set<Menu> menus = getMenus().stream().filter(x -> x.getParent() == null).collect(Collectors.toSet());
+
+        for (Menu menu : menus) {
+            menu.setChildren(getMenus().stream()
+                    .filter(x -> menu.equals(x.getParent()))
+                    .collect(Collectors.toSet())
+            );
+
+            for (Menu child : menu.getChildren()) {
+                child.setChildren(getMenus().stream()
+                        .filter(x->child.equals(x.getParent()))
+                        .collect(Collectors.toSet())
+                );
+            }
+        }
+
+        return menus;
+    }
 }

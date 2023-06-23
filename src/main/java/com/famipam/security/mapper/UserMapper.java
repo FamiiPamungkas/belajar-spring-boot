@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class UserMapper implements Function<User, UserDTO> {
 
     private final RoleMapper roleMapper = new RoleMapper();
+    private final MenuMapper menuMapper = new MenuMapper();
 
     /**
      * Applies this function to the given argument.
@@ -32,7 +33,11 @@ public class UserMapper implements Function<User, UserDTO> {
                 user.getRoles()
                         .stream()
                         .map(roleMapper)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                user.getTreeMenus()
+                        .stream()
+                        .map(menuMapper)
+                        .collect(Collectors.toSet())
         );
     }
 }

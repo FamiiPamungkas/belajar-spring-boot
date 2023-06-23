@@ -4,9 +4,9 @@ import com.famipam.security.dto.MenuDTO;
 import com.famipam.security.entity.Menu;
 
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MenuMapper implements Function<Menu, MenuDTO> {
-
 
     /**
      * Applies this function to the given argument.
@@ -25,7 +25,11 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getDescription(),
                 menu.getLink(),
                 menu.getGroup(),
-                menu.isShowOnNav()
+                menu.isShowOnNav(),
+                menu.getChildren()
+                        .stream()
+                        .map(this)
+                        .collect(Collectors.toSet())
         );
     }
 }

@@ -29,6 +29,9 @@ public class Menu extends BaseEntity {
     private int seq;
     private boolean showOnNav;
 
+    @Column(columnDefinition = "varchar(64) DEFAULT ''")
+    private String icon;
+
     @ManyToOne
     private Menu parent;
 

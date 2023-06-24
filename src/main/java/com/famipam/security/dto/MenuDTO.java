@@ -10,6 +10,7 @@ public record MenuDTO(
         String link,
         String group,
         boolean showOnNav,
+        String icon,
         Set<MenuDTO> children,
         int seq
 ) {

@@ -4,7 +4,7 @@
     "name": "Dashboard",
     "description": "Dashboard Menu",
     "link": "/dashboard",
-    "group": "",
+    "group": "Home",
     "authority": "dashboard",
     "showOnNav": "true",
     "icon": "speed",
@@ -27,7 +27,7 @@
     "description": "List User Menu",
     "link": "/users",
     "group": "User Management",
-    "authority": "list-user",
+    "authority": "user-list",
     "showOnNav": "true",
     "seq": 1001,
     "parent": {

@@ -18,7 +18,9 @@ public class BaseEntity implements Serializable {
     private Long id;
 
     private Boolean active;
+    @Column(columnDefinition = "datetime default current_timestamp()")
     private Date createAt;
+    @Column(columnDefinition = "datetime default current_timestamp()")
     private Date updatedAt;
 
     @PrePersist

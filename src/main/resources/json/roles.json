@@ -1,6 +1,7 @@
 [
   {
     "id": "1",
+    "authority": "admin",
     "name": "Admin",
     "description": "Role Admin",
     "menus": [
@@ -20,6 +21,7 @@
   },
   {
     "id": "2",
+    "authority": "user",
     "name": "User",
     "description": "Role User",
     "menus": [

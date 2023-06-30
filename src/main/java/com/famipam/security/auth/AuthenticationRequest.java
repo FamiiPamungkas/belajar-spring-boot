@@ -1,15 +1,17 @@
 package com.famipam.security.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class AuthenticationRequest {
+    @NotEmpty
     private String username;
-    String password;
+    @NotEmpty
+    private String password;
+
 }

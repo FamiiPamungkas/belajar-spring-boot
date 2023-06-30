@@ -1,4 +1,4 @@
-package com.famipam.security.exception;
+package com.famipam.security.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorBody {
+public class BaseResponse {
 
     protected int status;
     protected String message;

@@ -6,6 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import lombok.*;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -37,9 +38,17 @@ public class Menu extends BaseEntity {
 
     @Transient
     private Set<Menu> children;
+    @Transient
+    private Set<String> authorities;
 
     public Set<Menu> getChildren() {
         return children != null ? children : new LinkedHashSet<>();
+    }
+    public Set<String> getAuthorities() {
+        if (authorities == null) {
+            return new LinkedHashSet<>(Collections.singletonList(authority));
+        }
+        return authorities;
     }
 
 }

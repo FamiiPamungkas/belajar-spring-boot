@@ -29,6 +29,7 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                         .stream()
                         .map(this)
                         .collect(Collectors.toSet()),
+                menu.getAuthorities(),
                 menu.getSeq()
         );
     }

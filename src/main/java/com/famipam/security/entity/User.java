@@ -105,10 +105,24 @@ public class User extends BaseEntity implements UserDetails {
 
             for (Menu child : menu.getChildren()) {
                 child.setChildren(getMenus().stream()
-                        .filter(x->child.equals(x.getParent()))
+                        .filter(x -> child.equals(x.getParent()))
                         .collect(Collectors.toSet())
                 );
             }
+        }
+
+        for (Menu menu : menus) {
+            Set<String> authorities = menu.getAuthorities();
+            for (Menu child : menu.getChildren()) {
+                Set<String> childAuthorities = child.getAuthorities();
+                authorities.add(child.getAuthority());
+                for (Menu subChild : child.getChildren()) {
+                    authorities.add(subChild.getAuthority());
+                    childAuthorities.add(subChild.getAuthority());
+                }
+                child.setAuthorities(childAuthorities);
+            }
+            menu.setAuthorities(authorities);
         }
 
         return menus;

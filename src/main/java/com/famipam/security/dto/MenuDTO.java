@@ -12,6 +12,7 @@ public record MenuDTO(
         boolean showOnNav,
         String icon,
         Set<MenuDTO> children,
+        Set<String> authorities,
         int seq
 ) {
 }

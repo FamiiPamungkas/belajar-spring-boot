@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        System.out.println("### Filter");
+        System.out.println("### FILTER START");
         final String authHeader = request.getHeader("Authorization");
         final String username;
         String jwt;
@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
+            if (authHeader.length() < 7) throw new ExpectedException("Authorization is invalid.");
             jwt = authHeader.substring(7);
             username = jwtService.extractUsername(jwt);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

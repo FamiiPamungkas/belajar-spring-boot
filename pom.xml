@@ -153,6 +153,7 @@
 					<jsonLibrary>jackson2</jsonLibrary>
 					<classPatterns>
 						<classPattern>com.famipam.security.entity.**</classPattern>
+						<classPattern>com.famipam.security.dto.**</classPattern>
 					</classPatterns>
 					<outputKind>module</outputKind>
 					<outputFile>

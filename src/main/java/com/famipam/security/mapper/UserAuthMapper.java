@@ -1,6 +1,6 @@
 package com.famipam.security.mapper;
 
-import com.famipam.security.dto.UserDTO;
+import com.famipam.security.dto.UserAuthDTO;
 import com.famipam.security.entity.User;
 import com.famipam.security.util.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class UserMapper implements Function<User, UserDTO> {
+public class UserAuthMapper implements Function<User, UserAuthDTO> {
 
     private final RoleMapper roleMapper = new RoleMapper();
     private final MenuMapper menuMapper = new MenuMapper();
@@ -22,8 +22,8 @@ public class UserMapper implements Function<User, UserDTO> {
      * @return the function result
      */
     @Override
-    public UserDTO apply(User user) {
-        return new UserDTO(
+    public UserAuthDTO apply(User user) {
+        return new UserAuthDTO(
                 user.getId(),
                 user.getFirstname(),
                 Optional.ofNullable(user.getLastname()).orElse(""),
@@ -33,6 +33,10 @@ public class UserMapper implements Function<User, UserDTO> {
                 user.getRoles()
                         .stream()
                         .map(roleMapper)
+                        .collect(Collectors.toSet()),
+                user.getTreeMenus()
+                        .stream()
+                        .map(menuMapper)
                         .collect(Collectors.toSet())
         );
     }

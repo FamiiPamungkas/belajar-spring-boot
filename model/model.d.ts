@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-06-24 13:35:28.
+// Generated using typescript-generator version 3.2.1263 on 2023-07-07 14:17:03.
 
 export interface BaseEntity extends Serializable {
     id: number;
@@ -20,6 +20,7 @@ export interface Menu extends BaseEntity {
     icon: string;
     parent: Menu;
     children: Menu[];
+    authorities: string[];
 }
 
 export interface MenuBuilder {
@@ -60,6 +61,6 @@ export interface UserDetails extends Serializable {
     username: string;
     accountNonExpired: boolean;
     credentialsNonExpired: boolean;
-    accountNonLocked: boolean;
     authorities: GrantedAuthority[];
+    accountNonLocked: boolean;
 }

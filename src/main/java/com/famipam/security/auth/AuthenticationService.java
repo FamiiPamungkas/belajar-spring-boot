@@ -3,7 +3,7 @@ package com.famipam.security.auth;
 import com.famipam.security.config.JwtService;
 import com.famipam.security.entity.User;
 import com.famipam.security.exception.ResourceNotFoundException;
-import com.famipam.security.mapper.UserMapper;
+import com.famipam.security.mapper.UserAuthMapper;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.util.DateUtils;
 import io.jsonwebtoken.JwtException;
@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper = new UserMapper();
+    private final UserAuthMapper userAuthMapper = new UserAuthMapper();
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -55,7 +55,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtService.generateAccessToken(user))
                 .refreshToken(jwtService.generateRefreshToken(user))
-                .user(userMapper.apply(user))
+                .user(userAuthMapper.apply(user))
                 .build();
     }
 

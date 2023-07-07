@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.Set;
 
-public record UserDTO(
+public record UserAuthDTO(
         long id,
         @NotBlank(message = "Firstname is required")
         String firstname,
@@ -17,6 +17,7 @@ public record UserDTO(
         @NotBlank(message = "Email is required")
         @Email(message = "Must be a well-formed email address")
         String email,
-        Set<RoleDTO> roles
+        Set<RoleDTO> roles,
+        Set<MenuDTO> treeMenus
 ) {
 }

@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-07-07 16:44:58.
+// Generated using typescript-generator version 3.2.1263 on 2023-07-10 11:12:53.
 
 export interface MenuDTO {
     id: number;
@@ -90,6 +90,35 @@ export interface User extends BaseEntity, UserDetails {
 export interface UserBuilder {
 }
 
+export interface BaseResponse {
+    status: number;
+    message: string;
+}
+
+export interface BaseResponseBuilder<C, B> {
+}
+
+export interface BaseResponseBuilderImpl extends BaseResponseBuilder<BaseResponse, BaseResponseBuilderImpl> {
+}
+
+export interface SimpleOption {
+    key: string;
+    value: string;
+}
+
+export interface SimpleOptionBuilder {
+}
+
+export interface ValidationResponse extends BaseResponse {
+    errors: { [index: string]: string };
+}
+
+export interface ValidationResponseBuilder<C, B> extends BaseResponseBuilder<C, B> {
+}
+
+export interface ValidationResponseBuilderImpl extends ValidationResponseBuilder<ValidationResponse, ValidationResponseBuilderImpl> {
+}
+
 export interface Serializable {
 }
 
@@ -99,10 +128,10 @@ export interface GrantedAuthority extends Serializable {
 
 export interface UserDetails extends Serializable {
     enabled: boolean;
+    accountNonExpired: boolean;
+    credentialsNonExpired: boolean;
     password: string;
     username: string;
-    credentialsNonExpired: boolean;
-    accountNonExpired: boolean;
     authorities: GrantedAuthority[];
     accountNonLocked: boolean;
 }

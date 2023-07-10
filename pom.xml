@@ -154,6 +154,7 @@
 					<classPatterns>
 						<classPattern>com.famipam.security.entity.**</classPattern>
 						<classPattern>com.famipam.security.dto.**</classPattern>
+						<classPattern>com.famipam.security.model.**</classPattern>
 					</classPatterns>
 					<outputKind>module</outputKind>
 					<outputFile>

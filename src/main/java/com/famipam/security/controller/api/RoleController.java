@@ -2,7 +2,7 @@ package com.famipam.security.controller.api;
 
 import com.famipam.security.dto.RoleDTO;
 import com.famipam.security.entity.Role;
-import com.famipam.security.exception.ResourceNotFoundException;
+import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.RoleMapper;
 import com.famipam.security.model.SimpleOption;
 import com.famipam.security.repository.RoleRepository;
@@ -50,7 +50,7 @@ public class RoleController {
     public ResponseEntity<RoleDTO> getRole(
             @PathVariable long id
     ) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role [" + id + "] not found."));
+        Role role = roleRepository.findById(id).orElseThrow(() -> new NotFoundException("Role [" + id + "] not found."));
         return ResponseEntity.ok(roleMapper.apply(role));
     }
 

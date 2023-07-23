@@ -1,7 +1,6 @@
 package com.famipam.security.demo;
 
-import com.famipam.security.exception.ResourceNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
+import com.famipam.security.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +19,6 @@ public class DemoController {
 
     @GetMapping("exception")
     public ResponseEntity<?> testException() {
-        throw new ResourceNotFoundException("Testing exception");
+        throw new NotFoundException("Testing exception");
     }
 }

@@ -2,7 +2,7 @@ package com.famipam.security.auth;
 
 import com.famipam.security.config.JwtService;
 import com.famipam.security.entity.User;
-import com.famipam.security.exception.ResourceNotFoundException;
+import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.UserAuthMapper;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.util.DateUtils;
@@ -64,7 +64,7 @@ public class AuthenticationService {
 
         String username = jwtService.extractUsername(request.getToken());
         User user = repository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not Found."));
+                .orElseThrow(() -> new NotFoundException("User not Found."));
 
         return AuthenticationResponse.builder()
                 .token(jwtService.generateAccessToken(user))

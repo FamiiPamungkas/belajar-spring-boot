@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class ResourceNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String message) {
+    public NotFoundException(String message) {
         super(message);
     }
 

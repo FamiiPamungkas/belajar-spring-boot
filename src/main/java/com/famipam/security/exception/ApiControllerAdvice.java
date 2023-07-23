@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -41,7 +40,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(Throwable e) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(BaseResponse.builder()

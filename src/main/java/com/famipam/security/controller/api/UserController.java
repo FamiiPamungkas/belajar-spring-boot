@@ -1,22 +1,29 @@
 package com.famipam.security.controller.api;
 
+import com.famipam.security.dto.RoleDTO;
 import com.famipam.security.dto.UserDTO;
+import com.famipam.security.dto.UserFormRequest;
+import com.famipam.security.entity.Role;
 import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;
-import com.famipam.security.exception.ResourceNotFoundException;
+import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.UserMapper;
 import com.famipam.security.repository.UserRepository;
+import com.famipam.security.service.RoleService;
+import com.famipam.security.service.UserService;
 import com.famipam.security.util.DateUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Validated
@@ -27,6 +34,9 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
     private final UserMapper userMapper = new UserMapper();
 
     @GetMapping
@@ -43,7 +53,7 @@ public class UserController {
             @PathVariable long id
     ) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
+                .orElseThrow(() -> new NotFoundException("User [" + id + "] not found"));
         return ResponseEntity.ok(userMapper.apply(user));
     }
 
@@ -52,7 +62,7 @@ public class UserController {
             @PathVariable long id
     ) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User [" + id + "] not found"));
+                .orElseThrow(() -> new NotFoundException("User [" + id + "] not found"));
         userRepository.delete(user);
         return ResponseEntity.ok("Delete User Success");
     }
@@ -62,9 +72,9 @@ public class UserController {
             @Valid @RequestBody UserDTO userDTO
     ) throws ParseException {
         User user = userRepository.findById(userDTO.id())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        if (userRepository.existsByUsernameExcludingUserId(userDTO.username(), user.getId()))
+        if (userRepository.existsByUsername(userDTO.username(), user.getId()))
             throw new ExpectedException("Username Has Been Used");
 
         Date birthdate = DateUtils.parseISODate(userDTO.birthdate());
@@ -78,6 +88,35 @@ public class UserController {
         userRepository.save(user);
 
         return ResponseEntity.ok(userDTO);
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserDTO> addUser(
+            @Valid @RequestBody UserFormRequest userDTO
+    ) throws ParseException {
+        if (userService.existsByUsername(userDTO.username(), userDTO.id()))
+            throw new ExpectedException("Username Has Been Used");
+
+        User user = new User();
+
+        user.setFirstname(userDTO.firstname());
+        user.setLastname(userDTO.lastname());
+        user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
+        user.setEmail(userDTO.email());
+        user.setUsername(userDTO.username());
+        user.setPassword(passwordEncoder.encode(userDTO.password()));
+
+        Set<Role> roles = new LinkedHashSet<>();
+        for (RoleDTO roleDTO : userDTO.roles()) {
+            Role role = roleService.findById(roleDTO.id())
+                    .orElseThrow(() -> new NotFoundException("Role [" + roleDTO.id() + "] not found"));
+            roles.add(role);
+        }
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(userMapper.apply(user));
     }
 
 

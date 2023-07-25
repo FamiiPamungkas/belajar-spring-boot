@@ -20,6 +20,7 @@ public class RoleMapper implements Function<Role, RoleDTO> {
     public RoleDTO apply(Role role) {
         return new RoleDTO(
                 role.getId(),
+                role.getAuthority(),
                 role.getName(),
                 role.getDescription(),
                 role.getMenus()

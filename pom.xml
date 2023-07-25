@@ -158,7 +158,7 @@
 					</classPatterns>
 					<outputKind>module</outputKind>
 					<outputFile>
-						${project.basedir}\model\model.d.ts
+						${project.basedir}\model\interfaces.d.ts
 					</outputFile>
 				</configuration>
 			</plugin>

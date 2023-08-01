@@ -27,7 +27,6 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
-            JwtException.class,
             ExpectedException.class
     })
     public ResponseEntity<?> handleExpectedException(Throwable e) {
@@ -51,7 +50,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({SignatureException.class, AccessDeniedException.class, BadCredentialsException.class})
+    @ExceptionHandler({SignatureException.class, AccessDeniedException.class, BadCredentialsException.class, JwtException.class})
     public ResponseEntity<?> handleJwtSignatureException(Throwable e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(BaseResponse.builder()

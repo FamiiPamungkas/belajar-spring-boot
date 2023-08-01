@@ -19,8 +19,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${app.version}")
-    private String APP_VERSION;
+    @Value("${auth.version}")
+    private String AUTH_VERSION;
 
     private static final String SECRET_KEY = "3778214125432A462D4A614E645267556B58703273357638792F423F4528472B";
     private static final long TOKEN_EXPIRATION_TIME = (long) 1000 * 60 * 30;
@@ -42,7 +42,7 @@ public class JwtService {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("ver", APP_VERSION);
+        claims.put("ver", AUTH_VERSION);
         claims.put("type", TokenType.ACCESS_TOKEN);
 
         return generateToken(claims, userDetails, TOKEN_EXPIRATION_TIME);
@@ -115,7 +115,7 @@ public class JwtService {
         try {
             String appVersion = extractAppVersion(token);
             String[] version = appVersion.split("\\.");
-            String[] currentVersion = APP_VERSION.split("\\.");
+            String[] currentVersion = AUTH_VERSION.split("\\.");
             return !version[1].equals(currentVersion[1]);
         } catch (Exception e) {
             return true;

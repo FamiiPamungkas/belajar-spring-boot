@@ -8,6 +8,7 @@ import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.UserMapper;
+import com.famipam.security.model.ApiResponse;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.service.RoleService;
 import com.famipam.security.service.UserService;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 //@PreAuthorize("hasAuthority('user-management')")
-public class UserController {
+public class UserController extends BaseController {
 
     private final UserRepository userRepository;
     private final UserService userService;
@@ -67,7 +68,7 @@ public class UserController {
         return ResponseEntity.ok("Delete User Success");
     }
 
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<UserDTO> editUser(
             @Valid @RequestBody UserDTO userDTO
     ) throws ParseException {
@@ -90,20 +91,19 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @PostMapping()
-    public ResponseEntity<UserDTO> addUser(
+    @PostMapping
+    public ResponseEntity<ApiResponse> addUser(
             @Valid @RequestBody UserFormRequest userDTO
     ) throws ParseException {
-        if (userService.existsByUsername(userDTO.username(), userDTO.id()))
-            throw new ExpectedException("Username Has Been Used");
+        if (userService.existsByUsername(userDTO.username().trim(), userDTO.id()))
+            throw new ExpectedException("Username has been used");
 
         User user = new User();
-
         user.setFirstname(userDTO.firstname());
         user.setLastname(userDTO.lastname());
         user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
         user.setEmail(userDTO.email());
-        user.setUsername(userDTO.username());
+        user.setUsername(userDTO.username().trim());
         user.setPassword(passwordEncoder.encode(userDTO.password()));
 
         Set<Role> roles = new LinkedHashSet<>();
@@ -115,8 +115,12 @@ public class UserController {
         user.setRoles(roles);
 
         userRepository.save(user);
-
-        return ResponseEntity.ok(userMapper.apply(user));
+        return ResponseEntity.ok(ApiResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(SUCCESS)
+                .data(userMapper.apply(user))
+                .build()
+        );
     }
 
 

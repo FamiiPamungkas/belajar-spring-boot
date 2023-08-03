@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
+public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
@@ -50,8 +50,20 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({SignatureException.class, AccessDeniedException.class, BadCredentialsException.class, JwtException.class})
-    public ResponseEntity<?> handleJwtSignatureException(Throwable e) {
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<?> handleAccessException(Throwable e) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        return new ResponseEntity<>(BaseResponse.builder()
+                .status(status.value())
+                .message("Sorry, you don't have permission to use this feature. Contact your administrator for help.")
+                .build(), status
+        );
+    }
+
+
+    @ResponseBody
+    @ExceptionHandler({SignatureException.class, BadCredentialsException.class, JwtException.class})
+    public ResponseEntity<?> handleAuthException(Throwable e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(BaseResponse.builder()
                 .status(status.value())
@@ -62,6 +74,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
+    @SuppressWarnings("CallToPrintStackTrace")
     public ResponseEntity<?> handleException(Throwable e) {
         e.printStackTrace();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

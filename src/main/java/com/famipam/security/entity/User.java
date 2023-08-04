@@ -17,13 +17,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@TableGenerator(
-        name = "sequence",
-        table = "sequence",
-        pkColumnName = "sequence_name",
-        valueColumnName = "next_val",
-        allocationSize = 1
-)
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class User extends BaseEntity implements UserDetails {
 

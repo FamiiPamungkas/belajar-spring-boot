@@ -24,7 +24,7 @@ public class Role extends BaseEntity {
     private String description;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    Set<Menu> menus;
+    private Set<Menu> menus;
 
     @Override
     protected void prePersist() {

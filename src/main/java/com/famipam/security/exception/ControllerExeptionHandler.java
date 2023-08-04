@@ -27,7 +27,7 @@ public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
-            ExpectedException.class
+            ExpectedException.class, BadCredentialsException.class
     })
     public ResponseEntity<?> handleExpectedException(Throwable e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -62,7 +62,7 @@ public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ResponseBody
-    @ExceptionHandler({SignatureException.class, BadCredentialsException.class, JwtException.class})
+    @ExceptionHandler({SignatureException.class, JwtException.class})
     public ResponseEntity<?> handleAuthException(Throwable e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(BaseResponse.builder()

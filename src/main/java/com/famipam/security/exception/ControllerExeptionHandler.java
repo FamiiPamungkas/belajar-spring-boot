@@ -53,9 +53,13 @@ public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<?> handleAccessException(Throwable e) {
         HttpStatus status = HttpStatus.FORBIDDEN;
+        String message = e.getMessage();
+        if (message.equals("Access Denied")) {
+            message = "Sorry, you don't have permission to use this feature. Contact your administrator for help.";
+        }
         return new ResponseEntity<>(BaseResponse.builder()
                 .status(status.value())
-                .message("Sorry, you don't have permission to use this feature. Contact your administrator for help.")
+                .message(message)
                 .build(), status
         );
     }
@@ -103,7 +107,7 @@ public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
             for (String message : array) {
                 String[] split = message.split(":");
                 if (split[0] != null && split[1] != null) {
-                    errors.put(split[0], (split[1]).trim().replace("'",""));
+                    errors.put(split[0], (split[1]).trim().replace("'", ""));
                 }
             }
         }

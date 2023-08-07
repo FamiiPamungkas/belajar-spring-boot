@@ -9,6 +9,7 @@ import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.UserMapper;
 import com.famipam.security.model.ApiResponse;
+import com.famipam.security.model.BaseResponse;
 import com.famipam.security.repository.UserRepository;
 import com.famipam.security.service.RoleService;
 import com.famipam.security.service.UserService;
@@ -16,7 +17,10 @@ import com.famipam.security.util.DateUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +36,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-//@PreAuthorize("hasAuthority('user-management')")
 public class UserController extends BaseController {
 
     private final UserRepository userRepository;
@@ -60,13 +63,28 @@ public class UserController extends BaseController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUser(
+    @PreAuthorize(value = "hasAuthority('user-management')")
+    public ResponseEntity<BaseResponse> deleteUser(
             @PathVariable long id
     ) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User [" + id + "] not found"));
-        userRepository.delete(user);
-        return ResponseEntity.ok("Delete User Success");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authUser = userService.findUserByUsername(authentication.getName(), 0);
+
+        if (user.getId().equals(1L)){
+            throw new AccessDeniedException("You cannot delete admin data.");
+        }
+
+        if (authUser.equals(user)){
+            throw new AccessDeniedException("You cannot delete your own data.");
+        }
+
+        return ResponseEntity.ok(BaseResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(SUCCESS)
+                .build()
+        );
     }
 
     @PutMapping

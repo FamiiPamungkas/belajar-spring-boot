@@ -45,13 +45,12 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getUsername().trim(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByUsername(request.getUsername())
+        var user = repository.findByUsername(request.getUsername().trim())
                 .orElseThrow();
-
         return AuthenticationResponse.builder()
                 .token(jwtService.generateAccessToken(user))
                 .refreshToken(jwtService.generateRefreshToken(user))

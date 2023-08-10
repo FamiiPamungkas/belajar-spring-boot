@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +28,9 @@ public class ControllerExeptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
-            ExpectedException.class, BadCredentialsException.class
+            ExpectedException.class,
+            BadCredentialsException.class,
+            ParseException.class
     })
     public ResponseEntity<?> handleExpectedException(Throwable e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;

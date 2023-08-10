@@ -15,7 +15,6 @@ public record UserFormRequest(
         String birthdate,
         @NotBlank(message = "Username is required")
         String username,
-        @NotBlank(message = "Password is required")
         String password,
         @NotBlank(message = "Email is required")
         @Email(message = "Must be a well-formed email address")

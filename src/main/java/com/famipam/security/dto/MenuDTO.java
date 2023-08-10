@@ -11,6 +11,9 @@ public record MenuDTO(
         String group,
         boolean showOnNav,
         String icon,
+        boolean active,
+        String createdAt,
+        String updatedAt,
         Set<MenuDTO> children,
         Set<String> authorities,
         int seq

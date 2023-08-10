@@ -2,6 +2,7 @@ package com.famipam.security.mapper;
 
 import com.famipam.security.dto.MenuDTO;
 import com.famipam.security.entity.Menu;
+import com.famipam.security.util.DateUtils;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -25,6 +26,9 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getGroup(),
                 menu.isShowOnNav(),
                 menu.getIcon(),
+                menu.getActive(),
+                DateUtils.formatDate(menu.getCreateAt()),
+                DateUtils.formatDate(menu.getUpdatedAt()),
                 menu.getChildren()
                         .stream()
                         .map(this)

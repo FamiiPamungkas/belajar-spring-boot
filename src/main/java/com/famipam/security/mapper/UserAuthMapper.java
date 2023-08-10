@@ -30,6 +30,9 @@ public class UserAuthMapper implements Function<User, UserAuthDTO> {
                 DateUtils.formatDate(user.getBirthdate()),
                 user.getUsername(),
                 user.getEmail(),
+                user.getActive(),
+                DateUtils.formatDate(user.getCreateAt()),
+                DateUtils.formatDate(user.getUpdatedAt()),
                 user.getRoles()
                         .stream()
                         .map(roleMapper)

@@ -17,6 +17,9 @@ public record UserDTO(
         @NotBlank(message = "Email is required")
         @Email(message = "Must be a well-formed email address")
         String email,
+        boolean active,
+        String createdAt,
+        String updatedAt,
         Set<RoleDTO> roles
 ) {
 }

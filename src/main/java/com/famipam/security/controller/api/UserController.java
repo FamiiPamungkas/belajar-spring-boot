@@ -45,7 +45,7 @@ public class UserController extends BaseController {
     private final UserMapper userMapper = new UserMapper();
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUserList() {
         List<UserDTO> users = userRepository.findAll()
                 .stream()
                 .map(userMapper)
@@ -54,7 +54,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserDTO> getUser(
+    public ResponseEntity<UserDTO> getUserDetail(
             @PathVariable long id
     ) {
         User user = userRepository.findById(id)
@@ -109,6 +109,7 @@ public class UserController extends BaseController {
         if (!userDto.password().isEmpty()){
             user.setPassword(passwordEncoder.encode(userDto.password()));
         }
+        user.setUpdatedAt(new Date());
 
         userRepository.save(user);
         return ResponseEntity.ok(ApiResponse.builder()

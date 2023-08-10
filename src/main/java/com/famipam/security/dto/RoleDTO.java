@@ -7,6 +7,9 @@ public record RoleDTO(
         String authority,
         String name,
         String description,
+        boolean active,
+        String createdAt,
+        String updatedAt,
         List<MenuDTO> menus
 ) {
 }

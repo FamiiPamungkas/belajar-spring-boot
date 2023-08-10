@@ -34,6 +34,7 @@ public class DateUtils {
     public static Date parseISODate(String date) throws ParseException {
         return parseDate(date, DEFAULT_DATE_FORMAT);
     }
+
     public static Date parseDate(String dateStr, String format) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.parse(dateStr);

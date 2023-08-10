@@ -109,6 +109,7 @@ public class UserController extends BaseController {
         if (!userDto.password().isEmpty()){
             user.setPassword(passwordEncoder.encode(userDto.password()));
         }
+        user.setActive(userDto.active());
         user.setUpdatedAt(new Date());
 
         userRepository.save(user);

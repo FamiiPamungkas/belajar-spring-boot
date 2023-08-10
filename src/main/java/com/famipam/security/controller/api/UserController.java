@@ -72,14 +72,15 @@ public class UserController extends BaseController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authUser = userService.findUserByUsername(authentication.getName(), 0);
 
-        if (user.getId().equals(1L)){
+        if (user.getId().equals(1L)) {
             throw new AccessDeniedException("You cannot delete admin data.");
         }
 
-        if (authUser.equals(user)){
+        if (authUser.equals(user)) {
             throw new AccessDeniedException("You cannot delete your own data.");
         }
 
+//        userRepository.delete(user);
         return ResponseEntity.ok(BaseResponse.builder()
                 .status(SUCCESS_CODE)
                 .message(SUCCESS)
@@ -88,26 +89,34 @@ public class UserController extends BaseController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> editUser(
-            @Valid @RequestBody UserDTO userDTO
+    @PreAuthorize(value = "hasAuthority('user-management')")
+    public ResponseEntity<ApiResponse> editUser(
+            @Valid @RequestBody UserFormRequest userDto
     ) throws ParseException {
-        User user = userRepository.findById(userDTO.id())
+        User user = userRepository.findById(userDto.id())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        if (userRepository.existsByUsername(userDTO.username(), user.getId()))
+        if (userRepository.existsByUsername(userDto.username(), user.getId())) {
             throw new ExpectedException("Username Has Been Used");
+        }
 
-        Date birthdate = DateUtils.parseISODate(userDTO.birthdate());
-
-        user.setFirstname(userDTO.firstname());
-        user.setLastname(userDTO.lastname());
+        Date birthdate = DateUtils.parseISODate(userDto.birthdate());
+        user.setFirstname(userDto.firstname());
+        user.setLastname(userDto.lastname());
         user.setBirthdate(birthdate);
-        user.setEmail(userDTO.email());
-        user.setUsername(userDTO.username());
+        user.setEmail(userDto.email());
+        user.setUsername(userDto.username());
+        if (!userDto.password().isEmpty()){
+            user.setPassword(passwordEncoder.encode(userDto.password()));
+        }
 
         userRepository.save(user);
-
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(SUCCESS)
+                .data(userMapper.apply(user))
+                .build()
+        );
     }
 
     @PostMapping
@@ -124,6 +133,9 @@ public class UserController extends BaseController {
         user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
         user.setEmail(userDTO.email());
         user.setUsername(userDTO.username().trim());
+        if (userDTO.password().isEmpty()){
+            throw new ExpectedException("Password is required");
+        }
         user.setPassword(passwordEncoder.encode(userDTO.password()));
 
         Set<Role> roles = new LinkedHashSet<>();

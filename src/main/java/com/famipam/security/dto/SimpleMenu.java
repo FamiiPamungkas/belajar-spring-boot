@@ -1,8 +1,6 @@
 package com.famipam.security.dto;
 
-import java.util.Set;
-
-public record MenuDTO(
+public record SimpleMenu(
         long id,
         String authority,
         String name,
@@ -14,8 +12,7 @@ public record MenuDTO(
         boolean active,
         String createdAt,
         String updatedAt,
-        Set<MenuDTO> children,
-        Set<String> authorities,
+        SimpleMenu parent,
         int seq
 ) {
 }

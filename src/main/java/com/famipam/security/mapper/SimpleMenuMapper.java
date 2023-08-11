@@ -1,13 +1,12 @@
 package com.famipam.security.mapper;
 
-import com.famipam.security.dto.MenuDTO;
+import com.famipam.security.dto.SimpleMenu;
 import com.famipam.security.entity.Menu;
 import com.famipam.security.util.DateUtils;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class MenuMapper implements Function<Menu, MenuDTO> {
+public class SimpleMenuMapper implements Function<Menu, SimpleMenu> {
 
     /**
      * Applies this function to the given argument.
@@ -16,8 +15,16 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
      * @return the function result
      */
     @Override
-    public MenuDTO apply(Menu menu) {
-        return new MenuDTO(
+    public SimpleMenu apply(Menu menu) {
+        if (menu == null) return null;
+
+        return apply(menu, 1);
+    }
+
+    private SimpleMenu apply(Menu menu, int layer) {
+        if (menu == null) return null;
+
+        return new SimpleMenu(
                 menu.getId(),
                 menu.getAuthority(),
                 menu.getName(),
@@ -29,11 +36,7 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getActive(),
                 DateUtils.formatDate(menu.getCreateAt()),
                 DateUtils.formatDate(menu.getUpdatedAt()),
-                menu.getChildren()
-                        .stream()
-                        .map(this)
-                        .collect(Collectors.toSet()),
-                menu.getAuthorities(),
+                (layer > 3) ? null : this.apply(menu.getParent(), (layer + 1)),
                 menu.getSeq()
         );
     }

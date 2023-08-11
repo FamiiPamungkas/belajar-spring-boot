@@ -1,6 +1,6 @@
 package com.famipam.security.auth;
 
-import com.famipam.security.dto.UserAuthDTO;
+import com.famipam.security.dto.user.UserAuthDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

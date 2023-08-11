@@ -1,11 +1,14 @@
 package com.famipam.security.controller.api;
 
 import com.famipam.security.dto.RoleDTO;
+import com.famipam.security.dto.user.SimpleUser;
 import com.famipam.security.entity.Role;
 import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.RoleMapper;
+import com.famipam.security.mapper.SimpleUserMapper;
 import com.famipam.security.model.SimpleOption;
 import com.famipam.security.repository.RoleRepository;
+import com.famipam.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,10 +27,12 @@ import java.util.stream.Collectors;
 public class RoleController {
 
     private final RoleRepository roleRepository;
+    private final UserService userService;
     private final RoleMapper roleMapper = new RoleMapper();
+    private final SimpleUserMapper userMapper = new SimpleUserMapper();
 
     @GetMapping
-    public ResponseEntity<List<RoleDTO>> getUsers() {
+    public ResponseEntity<List<RoleDTO>> getRoleList() {
         List<RoleDTO> users = roleRepository.findAll()
                 .stream()
                 .map(roleMapper)
@@ -36,7 +41,7 @@ public class RoleController {
     }
 
     @GetMapping("/options")
-    public ResponseEntity<List<SimpleOption>> getOptions() {
+    public ResponseEntity<List<SimpleOption>> getRoleAsOptions() {
         List<SimpleOption> roles = roleRepository.findAll()
                 .stream()
                 .map(role -> new SimpleOption(
@@ -52,6 +57,20 @@ public class RoleController {
     ) {
         Role role = roleRepository.findById(id).orElseThrow(() -> new NotFoundException("Role [" + id + "] not found."));
         return ResponseEntity.ok(roleMapper.apply(role));
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<SimpleUser>> findRoleUsers(
+            @PathVariable long id
+    ) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Role [" + id + "] not found."));
+        return ResponseEntity.ok(
+                userService.findByRole(role)
+                        .stream()
+                        .map(userMapper)
+                        .toList()
+        );
     }
 
 }

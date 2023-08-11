@@ -1,5 +1,7 @@
-package com.famipam.security.dto;
+package com.famipam.security.dto.user;
 
+import com.famipam.security.dto.MenuDTO;
+import com.famipam.security.dto.RoleDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

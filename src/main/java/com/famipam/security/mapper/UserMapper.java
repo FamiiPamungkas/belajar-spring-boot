@@ -1,6 +1,6 @@
 package com.famipam.security.mapper;
 
-import com.famipam.security.dto.UserDTO;
+import com.famipam.security.dto.user.UserDTO;
 import com.famipam.security.entity.User;
 import com.famipam.security.util.DateUtils;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.famipam.security.controller.api;
 
 import com.famipam.security.dto.RoleDTO;
-import com.famipam.security.dto.UserDTO;
-import com.famipam.security.dto.UserFormRequest;
+import com.famipam.security.dto.user.UserDTO;
+import com.famipam.security.dto.user.UserFormRequest;
 import com.famipam.security.entity.Role;
 import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;

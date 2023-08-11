@@ -28,7 +28,7 @@ public class Menu extends BaseEntity {
     @Column(name = "group_name")
     private String group;
     private int seq;
-    private boolean showOnNav;
+    private boolean visible;
 
     @Column(columnDefinition = "varchar(64) DEFAULT ''")
     private String icon;

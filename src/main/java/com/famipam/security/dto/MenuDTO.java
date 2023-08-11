@@ -9,7 +9,7 @@ public record MenuDTO(
         String description,
         String link,
         String group,
-        boolean showOnNav,
+        boolean visible,
         String icon,
         boolean active,
         String createdAt,

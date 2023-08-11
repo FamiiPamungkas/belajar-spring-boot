@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Data
 @Builder
@@ -88,7 +87,7 @@ public class User extends BaseEntity implements UserDetails {
 
     private Set<Menu> getMenus() {
         return getRoles().stream()
-                .flatMap(role -> role.getMenus().stream().filter(Menu::isShowOnNav))
+                .flatMap(role -> role.getMenus().stream().filter(Menu::isVisible))
                 .collect(Collectors.toSet());
     }
 

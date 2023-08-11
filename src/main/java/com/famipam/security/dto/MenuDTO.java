@@ -14,6 +14,7 @@ public record MenuDTO(
         boolean active,
         String createdAt,
         String updatedAt,
+        MenuDTO parent,
         Set<MenuDTO> children,
         Set<String> authorities,
         int seq

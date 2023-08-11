@@ -17,6 +17,7 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
      */
     @Override
     public MenuDTO apply(Menu menu) {
+        MenuDTO parent = menu.getParent() != null ? this.apply(menu.getParent()) : null;
         return new MenuDTO(
                 menu.getId(),
                 menu.getAuthority(),
@@ -29,6 +30,7 @@ public class MenuMapper implements Function<Menu, MenuDTO> {
                 menu.getActive(),
                 DateUtils.formatDate(menu.getCreateAt()),
                 DateUtils.formatDate(menu.getUpdatedAt()),
+                parent,
                 menu.getChildren()
                         .stream()
                         .map(this)

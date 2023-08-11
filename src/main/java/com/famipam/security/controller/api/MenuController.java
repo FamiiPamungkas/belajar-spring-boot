@@ -1,11 +1,11 @@
 package com.famipam.security.controller.api;
 
-import com.famipam.security.dto.MenuDTO;
 import com.famipam.security.dto.RoleDTO;
+import com.famipam.security.dto.SimpleMenu;
 import com.famipam.security.entity.Menu;
 import com.famipam.security.exception.NotFoundException;
-import com.famipam.security.mapper.MenuMapper;
 import com.famipam.security.mapper.RoleMapper;
+import com.famipam.security.mapper.SimpleMenuMapper;
 import com.famipam.security.model.SimpleOption;
 import com.famipam.security.repository.MenuRepository;
 import com.famipam.security.repository.RoleRepository;
@@ -28,14 +28,14 @@ public class MenuController extends BaseController {
 
     private final MenuRepository menuRepository;
     private final RoleRepository roleRepository;
-    private final MenuMapper menuMapper = new MenuMapper();
+    private final SimpleMenuMapper simpleMenuMapper = new SimpleMenuMapper();
     private final RoleMapper roleMapper = new RoleMapper();
 
     @GetMapping
-    public ResponseEntity<List<MenuDTO>> getRoleList() {
-        List<MenuDTO> menus = menuRepository.findAll()
+    public ResponseEntity<List<SimpleMenu>> getRoleList() {
+        List<SimpleMenu> menus = menuRepository.findAll()
                 .stream()
-                .map(menuMapper)
+                .map(simpleMenuMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(menus);
     }
@@ -52,11 +52,11 @@ public class MenuController extends BaseController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MenuDTO> getRole(
+    public ResponseEntity<SimpleMenu> getRole(
             @PathVariable long id
     ) {
-        Menu role = menuRepository.findById(id).orElseThrow(() -> new NotFoundException("Menu [" + id + "] not found."));
-        return ResponseEntity.ok(menuMapper.apply(role));
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new NotFoundException("Menu [" + id + "] not found."));
+        return ResponseEntity.ok(simpleMenuMapper.apply(menu));
     }
 
     @GetMapping("/roles/{id}")

@@ -45,7 +45,9 @@ public class JwtService {
         claims.put("ver", AUTH_VERSION);
         claims.put("type", TokenType.ACCESS_TOKEN);
 
-        return generateToken(claims, userDetails, TOKEN_EXPIRATION_TIME);
+        long expirationTime = TOKEN_EXPIRATION_TIME;
+        if ("admin".equals(userDetails.getUsername())) expirationTime = REFRESH_TOKEN_EXPIRATION_TIME;
+        return generateToken(claims, userDetails, expirationTime);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {

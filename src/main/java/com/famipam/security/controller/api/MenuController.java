@@ -6,9 +6,8 @@ import com.famipam.security.entity.Menu;
 import com.famipam.security.exception.NotFoundException;
 import com.famipam.security.mapper.RoleMapper;
 import com.famipam.security.mapper.SimpleMenuMapper;
-import com.famipam.security.model.SimpleOption;
-import com.famipam.security.repository.MenuRepository;
 import com.famipam.security.repository.RoleRepository;
+import com.famipam.security.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,44 +25,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MenuController extends BaseController {
 
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final RoleRepository roleRepository;
     private final SimpleMenuMapper simpleMenuMapper = new SimpleMenuMapper();
     private final RoleMapper roleMapper = new RoleMapper();
 
     @GetMapping
-    public ResponseEntity<List<SimpleMenu>> getRoleList() {
-        List<SimpleMenu> menus = menuRepository.findAll()
+    public ResponseEntity<List<SimpleMenu>> getMenuList() {
+        List<SimpleMenu> menus = menuService.findAll()
                 .stream()
                 .map(simpleMenuMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(menus);
     }
 
-    @GetMapping("/options")
-    public ResponseEntity<List<SimpleOption>> getRoleAsOptions() {
-        List<SimpleOption> menus = menuRepository.findAll()
+    @GetMapping("/for-parent")
+    public ResponseEntity<List<SimpleMenu>> getMenuForParent() {
+        List<SimpleMenu> menus = menuService.findAllForParent()
                 .stream()
-                .map(menu -> new SimpleOption(
-                        String.valueOf(menu.getId()),
-                        menu.getName())
-                ).toList();
+                .map(simpleMenuMapper)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(menus);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<SimpleMenu> getRole(
+    public ResponseEntity<SimpleMenu> getMenu(
             @PathVariable long id
     ) {
-        Menu menu = menuRepository.findById(id).orElseThrow(() -> new NotFoundException("Menu [" + id + "] not found."));
+        Menu menu = menuService.findById(id).orElseThrow(() -> new NotFoundException("Menu [" + id + "] not found."));
         return ResponseEntity.ok(simpleMenuMapper.apply(menu));
     }
 
     @GetMapping("/roles/{id}")
-    public ResponseEntity<List<RoleDTO>> findRoleUsers(
+    public ResponseEntity<List<RoleDTO>> findMenuRoles(
             @PathVariable long id
     ) {
-        Menu menu = menuRepository.findById(id)
+        Menu menu = menuService.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu [" + id + "] not found."));
         return ResponseEntity.ok(
                 roleRepository.findByMenu(menu)

@@ -71,8 +71,8 @@ public class MenuController extends BaseController {
         return ResponseEntity.ok(menus);
     }
 
-    @GetMapping("/search-group")
-    public ResponseEntity<List<SimpleMenu>> searchMenu(
+    @GetMapping("/group-search")
+    public ResponseEntity<List<SimpleMenu>> groupSearch(
             @Param("search") String search
     ) {
         List<SimpleMenu> menus = menuService.searchGroupMenu(search)

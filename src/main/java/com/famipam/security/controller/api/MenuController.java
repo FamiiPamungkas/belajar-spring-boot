@@ -9,6 +9,7 @@ import com.famipam.security.mapper.SimpleMenuMapper;
 import com.famipam.security.repository.RoleRepository;
 import com.famipam.security.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,15 +40,6 @@ public class MenuController extends BaseController {
         return ResponseEntity.ok(menus);
     }
 
-    @GetMapping("/for-parent")
-    public ResponseEntity<List<SimpleMenu>> getMenuForParent() {
-        List<SimpleMenu> menus = menuService.findAllForParent()
-                .stream()
-                .map(simpleMenuMapper)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(menus);
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<SimpleMenu> getMenu(
             @PathVariable long id
@@ -69,5 +61,26 @@ public class MenuController extends BaseController {
                         .toList()
         );
     }
+
+    @GetMapping("/for-parent")
+    public ResponseEntity<List<SimpleMenu>> getMenuForParent() {
+        List<SimpleMenu> menus = menuService.findAllForParent()
+                .stream()
+                .map(simpleMenuMapper)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(menus);
+    }
+
+    @GetMapping("/search-group")
+    public ResponseEntity<List<SimpleMenu>> searchMenu(
+            @Param("search") String search
+    ) {
+        List<SimpleMenu> menus = menuService.searchGroupMenu(search)
+                .stream()
+                .map(simpleMenuMapper)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(menus);
+    }
+
 
 }

@@ -22,10 +22,13 @@ public class Menu extends BaseEntity {
     private String authority;
     @Column(nullable = false)
     private String name;
+    @Column(columnDefinition = "varchar(255) DEFAULT ''")
     private String description;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "varchar(255) DEFAULT ''")
     private String link;
-    @Column(name = "group_name")
+
+    // jadi group_name untuk menghindari sql error
+    @Column(name = "group_name", nullable = false, columnDefinition = "varchar(255) DEFAULT ''")
     private String group;
     private int seq;
     private boolean visible;
@@ -44,6 +47,7 @@ public class Menu extends BaseEntity {
     public Set<Menu> getChildren() {
         return children != null ? children : new LinkedHashSet<>();
     }
+
     public Set<String> getAuthorities() {
         if (authorities == null) {
             return new LinkedHashSet<>(Collections.singletonList(authority));

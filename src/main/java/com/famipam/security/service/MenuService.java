@@ -28,4 +28,11 @@ public class MenuService extends BaseRepoService<Menu> {
         return repository.findGroupList();
     }
 
+    public boolean existsByAuthority(String authority, long id) {
+        return repository.existsByAuthority(authority, id);
+    }
+
+    public int getParentLastSequence(Menu parent) {
+        return repository.getParentLastSequence(parent);
+    }
 }

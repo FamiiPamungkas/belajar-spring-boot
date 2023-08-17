@@ -19,4 +19,10 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     @Query("SELECT m.group FROM Menu m group by m.group")
     List<String> findGroupList();
+
+    @Query("SELECT COUNT(u) > 0 FROM Menu u WHERE u.authority = :authority AND u.id <> :excludeId")
+    boolean existsByAuthority(String authority, long excludeId);
+
+    @Query("SELECT m.seq FROM Menu m WHERE m.parent = :parent order by m.seq desc LIMIT 1")
+    int getParentLastSequence(Menu parent);
 }

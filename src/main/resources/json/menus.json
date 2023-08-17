@@ -1,63 +1,200 @@
 [
   {
     "id": 1,
+    "authority": "dashboard",
     "name": "Dashboard",
     "description": "Dashboard Menu",
     "link": "/dashboard",
     "group": "Home",
-    "authority": "dashboard",
-    "showOnNav": "true",
+    "visible": true,
     "icon": "speed",
+    "active": true,
+    "parent": null,
     "seq": 1
   },
   {
     "id": 2,
-    "name": "User Management",
-    "description": "User Management Menu",
-    "link": "/user-management",
-    "group": "User Management",
     "authority": "user-management",
-    "showOnNav": "true",
+    "name": "User Management",
+    "description": "User Management (Parent)",
+    "link": "",
+    "group": "Management",
+    "visible": true,
     "icon": "manage_accounts",
+    "active": true,
+    "parent": null,
     "seq": 1000
   },
   {
     "id": 3,
+    "authority": "user-list",
     "name": "Users",
     "description": "List User Menu",
     "link": "/users",
-    "group": "User Management",
-    "authority": "user-list",
-    "showOnNav": "true",
-    "seq": 1001,
+    "group": "Management",
+    "visible": true,
+    "icon": null,
+    "active": true,
     "parent": {
       "id": 2
-    }
+    },
+    "seq": 1001
   },
   {
     "id": 4,
+    "authority": "user-role",
     "name": "Role",
     "description": "User Role Menu",
     "link": "/roles",
-    "group": "User Management",
-    "authority": "user-role",
-    "showOnNav": "true",
-    "seq": 1002,
+    "group": "Management",
+    "visible": true,
+    "icon": null,
+    "active": true,
     "parent": {
       "id": 2
-    }
+    },
+    "seq": 1002
   },
   {
     "id": 5,
+    "authority": "user-menu",
     "name": "Menu",
     "description": "Menu",
     "link": "/menus",
-    "group": "User Management",
-    "authority": "user-menu",
-    "showOnNav": "true",
-    "seq": 1003,
+    "group": "Management",
+    "visible": true,
+    "icon": null,
+    "active": true,
     "parent": {
       "id": 2
-    }
+    },
+    "seq": 1003
+  },
+  {
+    "id": 6,
+    "authority": "product-management",
+    "name": "Product Management",
+    "description": "Product Management (Parent)",
+    "link": "",
+    "group": "Management",
+    "visible": true,
+    "icon": "shopping_cart",
+    "active": true,
+    "parent": null,
+    "seq": 2000
+  },
+  {
+    "id": 7,
+    "authority": "product-list",
+    "name": "Products",
+    "description": "List Products",
+    "link": "",
+    "group": "Management",
+    "visible": true,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 6
+    },
+    "seq": 2001
+  },
+  {
+    "id": 8,
+    "authority": "product-normal",
+    "name": "Products Normal",
+    "description": "List Normal Product",
+    "link": "/products-normal",
+    "group": "Management",
+    "visible": true,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 7,
+      "parent": {
+        "id": 6
+      },
+      "seq": 2001
+    },
+    "seq": 2002
+  },
+  {
+    "id": 9,
+    "authority": "product-consignment",
+    "name": "Products Consignment",
+    "description": "List Consignment Product",
+    "link": "/products-consignment",
+    "group": "Management",
+    "visible": true,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 7,
+      "parent": {
+        "id": 6,
+        "seq": 2000
+      },
+      "seq": 2001
+    },
+    "seq": 2003
+  },
+  {
+    "id": 10,
+    "authority": "user-add",
+    "name": "Add User",
+    "description": "Add User",
+    "link": "/users/add",
+    "group": "Management",
+    "visible": false,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 2
+    },
+    "seq": 1004
+  },
+  {
+    "id": 11,
+    "authority": "user-edit",
+    "name": "Edit User",
+    "description": "Edit User",
+    "link": "/users/edit",
+    "group": "Management",
+    "visible": false,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 2
+    },
+    "seq": 1005
+  },
+  {
+    "id": 12,
+    "authority": "user-menu-add",
+    "name": "Add Menu",
+    "description": "Add User",
+    "link": "/menus/add",
+    "group": "Management",
+    "visible": false,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 2
+    },
+    "seq": 1006
+  },
+  {
+    "id": 13,
+    "authority": "user-menu-edit",
+    "name": "Edit Menu",
+    "description": "Edit Menu",
+    "link": "/menus/edit",
+    "group": "Management",
+    "visible": false,
+    "icon": "",
+    "active": true,
+    "parent": {
+      "id": 2
+    },
+    "seq": 1006
   }
 ]

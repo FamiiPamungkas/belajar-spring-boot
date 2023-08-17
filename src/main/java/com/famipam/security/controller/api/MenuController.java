@@ -9,7 +9,6 @@ import com.famipam.security.mapper.SimpleMenuMapper;
 import com.famipam.security.repository.RoleRepository;
 import com.famipam.security.service.MenuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,15 +70,9 @@ public class MenuController extends BaseController {
         return ResponseEntity.ok(menus);
     }
 
-    @GetMapping("/group-search")
-    public ResponseEntity<List<SimpleMenu>> groupSearch(
-            @Param("search") String search
-    ) {
-        List<SimpleMenu> menus = menuService.searchGroupMenu(search)
-                .stream()
-                .map(simpleMenuMapper)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(menus);
+    @GetMapping("/groups")
+    public ResponseEntity<List<String>> findGroupList() {
+        return ResponseEntity.ok(menuService.findGroupList());
     }
 
 

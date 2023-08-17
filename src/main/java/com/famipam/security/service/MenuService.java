@@ -24,8 +24,8 @@ public class MenuService extends BaseRepoService<Menu> {
         return repository.findAllForParent();
     }
 
-    public List<Menu> searchGroupMenu(String name){
-        return repository.searchGroupMenu(name);
+    public List<String> findGroupList(){
+        return repository.findGroupList();
     }
 
 }

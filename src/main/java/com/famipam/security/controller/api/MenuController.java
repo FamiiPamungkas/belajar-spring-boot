@@ -1,10 +1,12 @@
 package com.famipam.security.controller.api;
 
+import com.famipam.security.dto.MenuDTO;
 import com.famipam.security.dto.RoleDTO;
 import com.famipam.security.dto.SimpleMenu;
 import com.famipam.security.entity.Menu;
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.NotFoundException;
+import com.famipam.security.mapper.MenuMapper;
 import com.famipam.security.mapper.RoleMapper;
 import com.famipam.security.mapper.SimpleMenuMapper;
 import com.famipam.security.model.ApiResponse;
@@ -17,7 +19,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Validated
@@ -30,6 +34,7 @@ public class MenuController extends BaseController {
     private final RoleRepository roleRepository;
     private final SimpleMenuMapper simpleMenuMapper = new SimpleMenuMapper();
     private final RoleMapper roleMapper = new RoleMapper();
+    private final MenuMapper menuMapper = new MenuMapper();
 
     @GetMapping
     public ResponseEntity<List<SimpleMenu>> getMenuList() {
@@ -38,6 +43,26 @@ public class MenuController extends BaseController {
                 .map(simpleMenuMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(menus);
+    }
+
+    @GetMapping("/tree")
+    public ResponseEntity<Set<MenuDTO>> getMenuTree() {
+        List<Menu> menus = menuService.findAll().stream().sorted(Comparator.comparingInt(Menu::getSeq)).toList();
+
+        for (Menu menu : menus) {
+            Set<Menu> children = menus.stream().filter(m -> menu.equals(m.getParent())).collect(Collectors.toSet());
+            menu.setChildren(children);
+        }
+
+        Set<Menu> treeMenus = menus.stream()
+                .filter(menu -> menu.getParent() == null)
+                .collect(Collectors.toSet());
+
+        Set<MenuDTO> menuDTOS = treeMenus.stream()
+                .map(menuMapper)
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(menuDTOS);
     }
 
     @GetMapping("{id}")
@@ -121,14 +146,14 @@ public class MenuController extends BaseController {
             @Valid @RequestBody SimpleMenu body
     ) {
 
-        Menu menu = menuService.findById(body.id()).orElseThrow(()-> new NotFoundException("Menu not found."));
+        Menu menu = menuService.findById(body.id()).orElseThrow(() -> new NotFoundException("Menu not found."));
         if (menuService.existsByAuthority(body.authority(), body.id())) {
             throw new ExpectedException("Menu with this authority [" + body.authority() + "] is already exists");
         }
 
         Menu parent = null;
         if (body.parent() != null) {
-            parent = menuService.findById(body.parent().id()).orElseThrow(() -> new NotFoundException("Parent with id ["+body.parent().id()+"] found!"));
+            parent = menuService.findById(body.parent().id()).orElseThrow(() -> new NotFoundException("Parent with id [" + body.parent().id() + "] found!"));
         }
 
         menu.setName(body.name());

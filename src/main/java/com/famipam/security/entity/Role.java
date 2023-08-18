@@ -29,7 +29,9 @@ public class Role extends BaseEntity {
     @Override
     protected void prePersist() {
         super.prePersist();
-        authority = StringUtils.upperCase(StringUtils.replace(name, " ", "_"));
-        authority = authority.replaceAll("[^A-Za-z0-9_]", "");
+        if (authority.isEmpty()){
+            authority = "role-" + StringUtils.lowerCase(StringUtils.replace(name, " ", "-"));
+            authority = authority.replaceAll("[^A-Za-z0-9_]", "");
+        }
     }
 }

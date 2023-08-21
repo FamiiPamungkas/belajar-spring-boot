@@ -1,6 +1,5 @@
 package com.famipam.security.controller.api;
 
-import com.famipam.security.dto.RoleDTO;
 import com.famipam.security.dto.user.UserDTO;
 import com.famipam.security.dto.user.UserFormRequest;
 import com.famipam.security.entity.Role;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,11 +104,14 @@ public class UserController extends BaseController {
         user.setBirthdate(birthdate);
         user.setEmail(userDto.email());
         user.setUsername(userDto.username());
-        if (!userDto.password().isEmpty()){
+        if (!userDto.password().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userDto.password()));
         }
         user.setActive(userDto.active());
         user.setUpdatedAt(new Date());
+
+        Set<Role> roles = roleService.getRolesFromDtos(userDto.roles());
+        user.setRoles(roles);
 
         userRepository.save(user);
         return ResponseEntity.ok(ApiResponse.builder()
@@ -135,17 +136,12 @@ public class UserController extends BaseController {
         user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
         user.setEmail(userDTO.email());
         user.setUsername(userDTO.username().trim());
-        if (userDTO.password().isEmpty()){
+        if (userDTO.password().isEmpty()) {
             throw new ExpectedException("Password is required");
         }
         user.setPassword(passwordEncoder.encode(userDTO.password()));
 
-        Set<Role> roles = new LinkedHashSet<>();
-        for (RoleDTO roleDTO : userDTO.roles()) {
-            Role role = roleService.findById(roleDTO.id())
-                    .orElseThrow(() -> new NotFoundException("Role [" + roleDTO.id() + "] not found"));
-            roles.add(role);
-        }
+        Set<Role> roles = roleService.getRolesFromDtos(userDTO.roles());
         user.setRoles(roles);
 
         userRepository.save(user);

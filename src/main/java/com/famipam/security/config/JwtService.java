@@ -24,7 +24,7 @@ public class JwtService {
 
     private static final String SECRET_KEY = "3778214125432A462D4A614E645267556B58703273357638792F423F4528472B";
     private static final long TOKEN_EXPIRATION_TIME = (long) 1000 * 60 * 30;
-    private static final int REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = (long) 1000 * 60 * 60 * 24 * 30;
 
     public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);

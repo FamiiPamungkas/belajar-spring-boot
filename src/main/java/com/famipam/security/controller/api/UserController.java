@@ -15,6 +15,9 @@ import com.famipam.security.service.UserService;
 import com.famipam.security.util.DateUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,6 +52,24 @@ public class UserController extends BaseController {
                 .map(userMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<Page<UserDTO>> getUserPages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "${page.size.default}") int size,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(required = false) Long roleId,
+            @RequestParam(required = false) Integer status
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Boolean active = null;
+        if (status != null && status != 0) {
+            active = (status == 1);
+        }
+
+        Page<User> pageUsers = userService.findByFilter(search, roleId, active, pageable);
+        return ResponseEntity.ok(pageUsers.map(userMapper));
     }
 
     @GetMapping("{id}")
@@ -86,9 +107,40 @@ public class UserController extends BaseController {
         );
     }
 
+    @PostMapping
+    @PreAuthorize(value = "hasAuthority('user-management')")
+    public ResponseEntity<ApiResponse> createUser(
+            @Valid @RequestBody UserFormRequest userDTO
+    ) throws ParseException {
+        if (userService.existsByUsername(userDTO.username().trim(), userDTO.id()))
+            throw new ExpectedException("Username has been used");
+
+        User user = new User();
+        user.setFirstname(userDTO.firstname());
+        user.setLastname(userDTO.lastname());
+        user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
+        user.setEmail(userDTO.email());
+        user.setUsername(userDTO.username().trim());
+        if (userDTO.password().isEmpty()) {
+            throw new ExpectedException("Password is required");
+        }
+        user.setPassword(passwordEncoder.encode(userDTO.password()));
+
+        Set<Role> roles = roleService.getRolesFromDtos(userDTO.roles());
+        user.setRoles(roles);
+
+        userRepository.save(user);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(SUCCESS)
+                .data(userMapper.apply(user))
+                .build()
+        );
+    }
+
     @PutMapping
     @PreAuthorize(value = "hasAuthority('user-management')")
-    public ResponseEntity<ApiResponse> editUser(
+    public ResponseEntity<ApiResponse> updateUser(
             @Valid @RequestBody UserFormRequest userDto
     ) throws ParseException {
         User user = userRepository.findById(userDto.id())
@@ -121,37 +173,5 @@ public class UserController extends BaseController {
                 .build()
         );
     }
-
-    @PostMapping
-    @PreAuthorize(value = "hasAuthority('user-management')")
-    public ResponseEntity<ApiResponse> addUser(
-            @Valid @RequestBody UserFormRequest userDTO
-    ) throws ParseException {
-        if (userService.existsByUsername(userDTO.username().trim(), userDTO.id()))
-            throw new ExpectedException("Username has been used");
-
-        User user = new User();
-        user.setFirstname(userDTO.firstname());
-        user.setLastname(userDTO.lastname());
-        user.setBirthdate(DateUtils.parseISODate(userDTO.birthdate()));
-        user.setEmail(userDTO.email());
-        user.setUsername(userDTO.username().trim());
-        if (userDTO.password().isEmpty()) {
-            throw new ExpectedException("Password is required");
-        }
-        user.setPassword(passwordEncoder.encode(userDTO.password()));
-
-        Set<Role> roles = roleService.getRolesFromDtos(userDTO.roles());
-        user.setRoles(roles);
-
-        userRepository.save(user);
-        return ResponseEntity.ok(ApiResponse.builder()
-                .status(SUCCESS_CODE)
-                .message(SUCCESS)
-                .data(userMapper.apply(user))
-                .build()
-        );
-    }
-
 
 }

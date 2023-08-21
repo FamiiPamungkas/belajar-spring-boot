@@ -155,6 +155,7 @@
 						<classPattern>com.famipam.security.entity.**</classPattern>
 						<classPattern>com.famipam.security.dto.**</classPattern>
 						<classPattern>com.famipam.security.model.**</classPattern>
+						<classPattern>org.springframework.data.domain.Page</classPattern>
 					</classPatterns>
 					<outputKind>module</outputKind>
 					<outputFile>

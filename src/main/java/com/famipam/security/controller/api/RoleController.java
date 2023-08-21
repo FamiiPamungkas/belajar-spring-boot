@@ -1,6 +1,5 @@
 package com.famipam.security.controller.api;
 
-import com.famipam.security.dto.MenuDTO;
 import com.famipam.security.dto.RoleDTO;
 import com.famipam.security.dto.user.SimpleUser;
 import com.famipam.security.entity.Menu;
@@ -19,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,13 +86,7 @@ public class RoleController extends BaseController {
             throw new ExpectedException("Role with this authority [" + roleDTO.authority() + "] is already exists");
         }
 
-        Set<Menu> menus = new LinkedHashSet<>();
-        Menu menu;
-        for (MenuDTO menuDTO : roleDTO.menus()) {
-            menu = menuService.findById(menuDTO.id())
-                    .orElseThrow(() -> new ExpectedException("Menu with id [" + menuDTO.id() + "] not found"));
-            menus.add(menu);
-        }
+        Set<Menu> menus = menuService.createMenusFromDtos(roleDTO.menus());
         Role role = Role.builder()
                 .name(roleDTO.name())
                 .authority(roleDTO.authority())
@@ -110,5 +102,36 @@ public class RoleController extends BaseController {
                 .build()
         );
     }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse> editRole(
+            @RequestBody RoleDTO roleDTO
+    ) {
+        Role role = roleService.findById(roleDTO.id())
+                .orElseThrow(() -> new NotFoundException("Role with id [" + roleDTO.id() + "] not found."));
+
+        boolean exists = roleService.existsByAuthority(roleDTO.authority(), roleDTO.id());
+        if (exists) {
+            throw new ExpectedException("Role with this authority [" + roleDTO.authority() + "] is already exists");
+        }
+
+        Set<Menu> menus = menuService.createMenusFromDtos(roleDTO.menus());
+
+        role.setName(roleDTO.name());
+        role.setAuthority(roleDTO.authority());
+        role.setDescription(roleDTO.description());
+        role.setMenus(menus);
+
+        roleService.save(role);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(SUCCESS)
+                .data(roleMapper.apply(role))
+                .build()
+        );
+    }
+
+
+
 
 }

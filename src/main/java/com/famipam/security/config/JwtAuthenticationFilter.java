@@ -1,7 +1,9 @@
 package com.famipam.security.config;
 
+import com.famipam.security.entity.User;
 import com.famipam.security.exception.ExpectedException;
 import com.famipam.security.exception.UserDisabledException;
+import com.famipam.security.service.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(
@@ -34,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         System.out.println("### FILTER START");
-        System.out.println("URI ="+request.getRequestURI());
+        System.out.println("URI =" + request.getRequestURI());
         final String authHeader = request.getHeader("Authorization");
         final String username;
         String jwt;
@@ -49,14 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(7);
             username = jwtService.extractUsername(jwt);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                System.out.println("-> user Enabled ? " + userDetails.isEnabled());
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    if (jwtService.isNeedToReAuthentication(jwt)) throw new ExpectedException("Your session is expired");
-                    if (!userDetails.isEnabled()) throw new UserDisabledException("User is Disabled");
+                User user = this.userService.findUserByUsername(username, 0);
+                if (jwtService.isTokenValid(jwt, user)) {
+                    if (jwtService.isNeedToReAuthentication(jwt))
+                        throw new ExpectedException("Your session is expired");
+                    if (!user.isEnabled()) throw new UserDisabledException("User is Disabled");
 
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
                     authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request)

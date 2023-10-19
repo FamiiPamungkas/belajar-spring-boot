@@ -144,7 +144,7 @@ public class UserController extends BaseController {
             @Valid @RequestBody UserFormRequest userDto
     ) throws ParseException {
         User user = userRepository.findById(userDto.id())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User [" + userDto.id() + "] not found"));
 
         if (userRepository.existsByUsername(userDto.username(), user.getId())) {
             throw new ExpectedException("Username Has Been Used");

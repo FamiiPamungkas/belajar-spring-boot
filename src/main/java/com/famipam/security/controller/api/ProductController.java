@@ -9,13 +9,11 @@ import com.famipam.security.model.ApiResponse;
 import com.famipam.security.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Validated
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class ProductController extends BaseController {
     private final ProductMapper productMapper = new ProductMapper();
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getRoleList() {
+    public ResponseEntity<List<ProductDTO>> list() {
         List<ProductDTO> users = productService.findAll()
                 .stream()
                 .map(productMapper)
@@ -34,7 +32,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProductDTO> getRole(
+    public ResponseEntity<ProductDTO> product(
             @PathVariable long id
     ) {
         Product product = productService.findById(id).orElseThrow(() -> new NotFoundException("Product [" + id + "] not found."));
@@ -42,7 +40,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addRole(
+    public ResponseEntity<ApiResponse> storeProduct(
             @RequestBody ProductDTO productDTO
     ) {
 
@@ -65,7 +63,7 @@ public class ProductController extends BaseController {
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse> editRole(
+    public ResponseEntity<ApiResponse> updateProduct(
             @RequestBody ProductDTO productDTO
     ) {
         Product product = productService.findById(productDTO.id())
@@ -73,7 +71,7 @@ public class ProductController extends BaseController {
 
         boolean exists = productService.existsByName(productDTO.name(), productDTO.id());
         if (exists) {
-            throw new ExpectedException("Role [" + productDTO.name() + "] is already exists");
+            throw new ExpectedException("Product [" + productDTO.name() + "] is already exists");
         }
 
         product.setName(productDTO.name());

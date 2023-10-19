@@ -1,9 +1,11 @@
 package com.famipam.security.config;
 
+import com.famipam.security.entity.User;
 import com.famipam.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -62,6 +64,11 @@ public class ApplicationConfig {
         config.addAllowedHeader("*");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    @Bean
+    public AuditorAware<User> auditorAware() {
+        return new EntityAuditorAware();
     }
 
 }

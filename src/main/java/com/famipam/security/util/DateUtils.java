@@ -2,6 +2,8 @@ package com.famipam.security.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class DateUtils {
@@ -10,7 +12,11 @@ public class DateUtils {
     private static final String YMD_TIME_FORMAT = "yyyyMMdd";
 
     public static String formatDate(Date date) {
-        return formatDate(date, DEFAULT_DATE_FORMAT);
+        try {
+            return formatDate(date, DEFAULT_DATE_FORMAT);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String formatDate(Date date, String format) {
@@ -38,5 +44,10 @@ public class DateUtils {
     public static Date parseDate(String dateStr, String format) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         return dateFormat.parse(dateStr);
+    }
+
+    public static Date getDate(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        return Date.from(localDateTime.atZone(zoneId).toInstant());
     }
 }

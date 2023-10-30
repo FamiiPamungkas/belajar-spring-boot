@@ -18,7 +18,10 @@ public class ProductMapper implements Function<Product, ProductDTO> {
     public ProductDTO apply(Product o) {
         return new ProductDTO(
                 o.getId(),
+                o.getCode(),
                 o.getName(),
+                o.getCategory(),
+                o.getPrice(),
                 DateUtils.formatDate(o.getCreateAt()),
                 DateUtils.formatDate(o.getUpdatedAt())
         );

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,7 +51,10 @@ public class ProductController extends BaseController {
         }
 
         Product product = Product.builder()
+                .code(productDTO.code())
                 .name(productDTO.name())
+                .category(productDTO.category())
+                .price(productDTO.price())
                 .build();
 
         productService.save(product);
@@ -75,8 +79,11 @@ public class ProductController extends BaseController {
         }
 
         product.setName(productDTO.name());
-
+        product.setCode(productDTO.code());
+        product.setCategory(productDTO.category());
+        product.setPrice(productDTO.price());
         productService.save(product);
+
         return ResponseEntity.ok(ApiResponse.builder()
                 .status(SUCCESS_CODE)
                 .message(SUCCESS)
@@ -85,5 +92,28 @@ public class ProductController extends BaseController {
         );
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<ApiResponse> test(
+    ) {
+        Product product1 = productService.findById(1L).orElse(null);
+        Product product2 = productService.findById(2L).orElse(null);
+        String diff = "";
+        if (product1 != null && product2 != null) {
+            Map<String, Object> map1 = product1.toMap();
+            Map<String, Object> map2 = product2.toMap();
+
+            diff = map1.entrySet().stream()
+                    .filter(m -> !m.getValue().equals(map2.get(m.getKey())))
+                    .map(v -> v.getKey() + " = " + map2.get(v.getKey()).toString() + " -> " + v.getValue().toString())
+                    .collect(Collectors.joining(";"));
+            System.out.println("-> diff = " + diff);
+        }
+
+        return ResponseEntity.ok(ApiResponse.builder()
+                .status(SUCCESS_CODE)
+                .message(diff)
+                .build()
+        );
+    }
 
 }

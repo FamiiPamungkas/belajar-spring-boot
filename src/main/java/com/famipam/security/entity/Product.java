@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Data
@@ -30,7 +32,10 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String code;
     private String name;
+    private String category;
+    private double price;
 
     @CreatedDate
     private Date createAt;
@@ -46,4 +51,14 @@ public class Product implements Serializable {
     @LastModifiedBy
     private User updatedBy;
 
+    public Map<String, Object> toMap() {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("id", this.getId());
+        userMap.put("code", this.getCode());
+        userMap.put("name", this.getName());
+        userMap.put("category", this.getCategory());
+        userMap.put("price", this.getPrice());
+
+        return userMap;
+    }
 }

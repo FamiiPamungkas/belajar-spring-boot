@@ -45,9 +45,9 @@ public class ProductController extends BaseController {
             @RequestBody ProductDTO productDTO
     ) {
 
-        boolean exists = productService.existsByName(productDTO.name(), productDTO.id());
+        boolean exists = productService.existsByCode(productDTO.code(), productDTO.id());
         if (exists) {
-            throw new ExpectedException("Product [" + productDTO.name() + "] is already exists");
+            throw new ExpectedException("Product [" + productDTO.code() + "] is already exists");
         }
 
         Product product = Product.builder()
@@ -73,45 +73,27 @@ public class ProductController extends BaseController {
         Product product = productService.findById(productDTO.id())
                 .orElseThrow(() -> new NotFoundException("Product [" + productDTO.id() + "] not found."));
 
-        boolean exists = productService.existsByName(productDTO.name(), productDTO.id());
+        boolean exists = productService.existsByCode(productDTO.code(), productDTO.id());
         if (exists) {
-            throw new ExpectedException("Product [" + productDTO.name() + "] is already exists");
+            throw new ExpectedException("Product [" + productDTO.code() + "] is already exists");
         }
+        // before changes
+        Product tmp = product.clone();
 
         product.setName(productDTO.name());
         product.setCode(productDTO.code());
         product.setCategory(productDTO.category());
         product.setPrice(productDTO.price());
+
+        Map<String, Object> difference = findDifference(tmp.toMapReflection(), product.toMapReflection());
+        System.out.println("@@ Difference = " + difference);
+
         productService.save(product);
 
         return ResponseEntity.ok(ApiResponse.builder()
                 .status(SUCCESS_CODE)
                 .message(SUCCESS)
                 .data(productMapper.apply(product))
-                .build()
-        );
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<ApiResponse> test(
-    ) {
-        Product product1 = productService.findById(1L).orElse(null);
-        Product product2 = productService.findById(2L).orElse(null);
-        String diff = "";
-        if (product1 != null && product2 != null) {
-            Map<String, Object> map1 = product1.toMap();
-            Map<String, Object> map2 = product2.toMap();
-
-            diff = map1.entrySet().stream()
-                    .filter(m -> !m.getValue().equals(map2.get(m.getKey())))
-                    .map(v -> v.getKey() + " = " + map2.get(v.getKey()).toString() + " -> " + v.getValue().toString())
-                    .collect(Collectors.joining(";"));
-            System.out.println("-> diff = " + diff);
-        }
-
-        return ResponseEntity.ok(ApiResponse.builder()
-                .status(SUCCESS_CODE)
-                .message(diff)
                 .build()
         );
     }

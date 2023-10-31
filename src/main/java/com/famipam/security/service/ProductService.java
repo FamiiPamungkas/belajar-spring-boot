@@ -22,8 +22,8 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public boolean existsByName(String name, long id) {
-        return repository.existsByName(name, id);
+    public boolean existsByCode(String name, long excludeId) {
+        return repository.existsByCode(name, excludeId);
     }
 
     public void save(Product product) {

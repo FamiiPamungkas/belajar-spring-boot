@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Product implements Serializable {
+public class Product implements Serializable, Cloneable {
 
     public Product(String name) {
         this.name = name;
@@ -58,6 +59,28 @@ public class Product implements Serializable {
         userMap.put("name", this.getName());
         userMap.put("category", this.getCategory());
         userMap.put("price", this.getPrice());
+
+        return userMap;
+    }
+
+    @Override
+    public Product clone() {
+        try {
+            return (Product) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+    public Map<String, Object> toMapReflection() {
+        Map<String, Object> userMap = new HashMap<>();
+
+        for (Field field : this.getClass().getDeclaredFields()) {
+            try {
+                userMap.put(field.getName(), field.get(this));
+            } catch (IllegalAccessException ignored) {
+            }
+        }
 
         return userMap;
     }

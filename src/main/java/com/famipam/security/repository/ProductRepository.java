@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.name = :name AND p.id <> :excludeId")
-    boolean existsByName(String name, long excludeId);
+    @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.code = :code AND p.id <> :excludeId")
+    boolean existsByCode(String code, long excludeId);
 }

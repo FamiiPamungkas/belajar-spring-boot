@@ -77,6 +77,7 @@ public class Product implements Serializable, Cloneable {
 
         for (Field field : this.getClass().getDeclaredFields()) {
             try {
+                field.setAccessible(true);
                 userMap.put(field.getName(), field.get(this));
             } catch (IllegalAccessException ignored) {
             }
